@@ -107,13 +107,8 @@ split = initial_split(penguins_clean, prop = 0.8, strata = species)
 train = training(split)
 test = testing(split)
 folds = vfold_cv(train, v = 5, strata = body_mass_kg)
-```
 
-    ## Warning: The number of observations in each quantile is below the recommended threshold
-    ## of 20.
-    ## • Stratification will use 3 breaks instead.
 
-``` r
 rec = recipe(body_mass_kg ~ ., data = train) |>
     step_dummy(all_nominal_predictors()) |>
     step_normalize(all_numeric_predictors())
@@ -205,26 +200,26 @@ collect_metrics(tune_res)
     ## # A tibble: 20 × 9
     ##    hidden_neurons activations learn_rate .metric .estimator  mean     n std_err
     ##    <list>         <list>           <dbl> <chr>   <chr>      <dbl> <int>   <dbl>
-    ##  1 <int [1]>      <chr [1]>     2.99e- 6 rmse    standard   2.58      5  0.141 
-    ##  2 <int [1]>      <chr [1]>     2.99e- 6 rsq     standard   0.460     5  0.183 
-    ##  3 <int [2]>      <chr [2]>     9.46e- 5 rmse    standard   1.86      5  0.163 
-    ##  4 <int [2]>      <chr [2]>     9.46e- 5 rsq     standard   0.786     5  0.0535
-    ##  5 <int [1]>      <chr [1]>     4.09e- 4 rmse    standard   3.21      5  0.0662
-    ##  6 <int [1]>      <chr [1]>     4.09e- 4 rsq     standard   0.716     5  0.0909
-    ##  7 <int [1]>      <chr [1]>     2.98e- 8 rmse    standard   2.97      5  0.193 
-    ##  8 <int [1]>      <chr [1]>     2.98e- 8 rsq     standard   0.486     5  0.144 
-    ##  9 <int [1]>      <chr [1]>     3.66e- 2 rmse    standard   3.24      5  0.122 
-    ## 10 <int [1]>      <chr [1]>     3.66e- 2 rsq     standard   0.668     5  0.130 
-    ## 11 <int [3]>      <chr [3]>     1.62e- 7 rmse    standard   0.429     5  0.0220
-    ## 12 <int [3]>      <chr [3]>     1.62e- 7 rsq     standard   0.741     5  0.0566
-    ## 13 <int [3]>      <chr [3]>     5.56e-10 rmse    standard   0.545     5  0.109 
-    ## 14 <int [3]>      <chr [3]>     5.56e-10 rsq     standard   0.678     5  0.109 
-    ## 15 <int [1]>      <chr [1]>     1.06e- 9 rmse    standard   3.42      5  0.0976
-    ## 16 <int [1]>      <chr [1]>     1.06e- 9 rsq     standard   0.761     5  0.0641
-    ## 17 <int [1]>      <chr [1]>     1.40e- 5 rmse    standard   3.58      5  0.0801
-    ## 18 <int [1]>      <chr [1]>     1.40e- 5 rsq     standard   0.558     5  0.145 
-    ## 19 <int [2]>      <chr [2]>     1.59e- 3 rmse    standard   2.05      5  0.214 
-    ## 20 <int [2]>      <chr [2]>     1.59e- 3 rsq     standard   0.458     5  0.137 
+    ##  1 <int [1]>      <chr [1]>     2.99e- 6 rmse    standard   4.19      5 0.120  
+    ##  2 <int [1]>      <chr [1]>     2.99e- 6 rsq     standard   0.573     5 0.135  
+    ##  3 <int [2]>      <chr [2]>     9.46e- 5 rmse    standard   4.00      5 0.0950 
+    ##  4 <int [2]>      <chr [2]>     9.46e- 5 rsq     standard   0.447     5 0.143  
+    ##  5 <int [1]>      <chr [1]>     4.09e- 4 rmse    standard   3.79      5 0.0680 
+    ##  6 <int [1]>      <chr [1]>     4.09e- 4 rsq     standard   0.441     5 0.170  
+    ##  7 <int [1]>      <chr [1]>     2.98e- 8 rmse    standard   4.14      5 0.114  
+    ##  8 <int [1]>      <chr [1]>     2.98e- 8 rsq     standard   0.228     5 0.174  
+    ##  9 <int [1]>      <chr [1]>     3.66e- 2 rmse    standard   0.107     5 0.0195 
+    ## 10 <int [1]>      <chr [1]>     3.66e- 2 rsq     standard   0.984     5 0.00452
+    ## 11 <int [3]>      <chr [3]>     1.62e- 7 rmse    standard   4.25      5 0.0603 
+    ## 12 <int [3]>      <chr [3]>     1.62e- 7 rsq     standard   0.277     5 0.114  
+    ## 13 <int [3]>      <chr [3]>     5.56e-10 rmse    standard   4.24      5 0.110  
+    ## 14 <int [3]>      <chr [3]>     5.56e-10 rsq     standard   0.211     5 0.119  
+    ## 15 <int [1]>      <chr [1]>     1.06e- 9 rmse    standard   4.27      5 0.0783 
+    ## 16 <int [1]>      <chr [1]>     1.06e- 9 rsq     standard   0.442     5 0.172  
+    ## 17 <int [1]>      <chr [1]>     1.40e- 5 rmse    standard   4.23      5 0.0990 
+    ## 18 <int [1]>      <chr [1]>     1.40e- 5 rsq     standard   0.691     5 0.105  
+    ## 19 <int [2]>      <chr [2]>     1.59e- 3 rmse    standard   0.896     5 0.101  
+    ## 20 <int [2]>      <chr [2]>     1.59e- 3 rsq     standard   0.426     5 0.0951 
     ## # ℹ 1 more variable: .config <chr>
 
 ``` r
@@ -232,13 +227,13 @@ show_best(tune_res, metric = "rmse", n = 5)
 ```
 
     ## # A tibble: 5 × 9
-    ##   hidden_neurons activations learn_rate .metric .estimator  mean     n std_err
-    ##   <list>         <list>           <dbl> <chr>   <chr>      <dbl> <int>   <dbl>
-    ## 1 <int [3]>      <chr [3]>     1.62e- 7 rmse    standard   0.429     5  0.0220
-    ## 2 <int [3]>      <chr [3]>     5.56e-10 rmse    standard   0.545     5  0.109 
-    ## 3 <int [2]>      <chr [2]>     9.46e- 5 rmse    standard   1.86      5  0.163 
-    ## 4 <int [2]>      <chr [2]>     1.59e- 3 rmse    standard   2.05      5  0.214 
-    ## 5 <int [1]>      <chr [1]>     2.99e- 6 rmse    standard   2.58      5  0.141 
+    ##   hidden_neurons activations   learn_rate .metric .estimator  mean     n std_err
+    ##   <list>         <list>             <dbl> <chr>   <chr>      <dbl> <int>   <dbl>
+    ## 1 <int [1]>      <chr [1]>   0.0366       rmse    standard   0.107     5  0.0195
+    ## 2 <int [2]>      <chr [2]>   0.00159      rmse    standard   0.896     5  0.101 
+    ## 3 <int [1]>      <chr [1]>   0.000409     rmse    standard   3.79      5  0.0680
+    ## 4 <int [2]>      <chr [2]>   0.0000946    rmse    standard   4.00      5  0.0950
+    ## 5 <int [1]>      <chr [1]>   0.0000000298 rmse    standard   4.14      5  0.114 
     ## # ℹ 1 more variable: .config <chr>
 
 ## Visualizing Results
@@ -269,25 +264,17 @@ final_model
     ## 
     ## ── Model ───────────────────────────────────────────────────────────────────────
 
-    ## Warning in system("tput cols", intern = TRUE): running command 'tput cols' had
-    ## status 2
-    ## Warning in system("tput cols", intern = TRUE): running command 'tput cols' had
-    ## status 2
-
     ## 
     ## ======================= Feedforward Neural Networks (MLP) ======================
     ## 
     ## 
     ## -- FFNN Model Summary ----------------------------------------------------------
 
-    ## Warning in system("tput cols", intern = TRUE): running command 'tput cols' had
-    ## status 2
-
     ## -------------------------------------------------------------------
     ##   NN Model Type           :         FFNN    n_predictors :      7
     ##   Number of Epochs        :           50    n_response   :      1
-    ##   Hidden Layer Units      :   31, 32, 32    reg.         :   None
-    ##   Number of Hidden Layers :            3    Device       :    cpu
+    ##   Hidden Layer Units      :           30    reg.         :   None
+    ##   Number of Hidden Layers :            1    Device       :    cpu
     ##   Pred. Type              :   regression                 :       
     ## -------------------------------------------------------------------
     ## 
@@ -295,13 +282,8 @@ final_model
     ## 
     ## -- Activation function ---------------------------------------------------------
 
-    ## Warning in system("tput cols", intern = TRUE): running command 'tput cols' had
-    ## status 2
-
     ## -------------------------------------------------
-    ##   1st Layer {31}    :                      relu
-    ##   2nd Layer {32}    :                       elu
-    ##   3rd Layer {32}    :   softshrink(lambd = 0.2)
+    ##   1st Layer {30}    :                       elu
     ##   Output Activation :   No act function applied
     ## -------------------------------------------------
 
@@ -319,8 +301,8 @@ final_model |>
     ## # A tibble: 2 × 3
     ##   .metric .estimator .estimate
     ##   <chr>   <chr>          <dbl>
-    ## 1 rmse    standard       0.459
-    ## 2 rsq     standard       0.650
+    ## 1 rmse    standard      0.0422
+    ## 2 rsq     standard      0.998
 
 ## A Note on Parametric Activations
 
