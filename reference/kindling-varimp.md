@@ -137,10 +137,10 @@ if (torch::torch_is_installed()) {
 }
 
 #>        x_names y_names    rel_imp
-#> 1  Petal.Width       y -0.9315814
-#> 2 Petal.Length       y -0.6598133
-#> 3  Sepal.Width       y  0.5120760
-#> 4 Sepal.Length       y  0.2954990
+#> 1 Petal.Length       y  0.4351930
+#> 2  Sepal.Width       y -0.3170403
+#> 3 Sepal.Length       y -0.1453713
+#> 4  Petal.Width       y  0.1348100
 # }
 
 # \donttest{
