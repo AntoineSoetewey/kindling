@@ -73,7 +73,7 @@ pak::pak("joshuamarie/kindling")
 library(kindling)
 ```
 
-Before starting, install LibTorch, the backend of PyTorch and the `{torch}` R package:
+Before starting, install LibTorch (the backend used by the `{torch}` R package):
 
 ``` r
 torch::install_torch()
