@@ -1,5 +1,12 @@
 # kindling (development version)
 
+## Ongoing features
+
+-  More visualization supports
+
+    -  Loss history plot
+    -  NN architecture plot
+
 # kindling 0.3.0
 
 ## New Experimental functions
