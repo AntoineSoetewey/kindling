@@ -623,20 +623,36 @@ train_nn_impl =
     }
 
     arch_env = if (!is.null(arch)) attr(arch, "env") else parent.frame()
-    model_expr = do.call(
+    # model_expr = do.call(
+    #     nn_module_generator,
+    #     c(
+    #         list(
+    #             hd_neurons = hidden_neurons,
+    #             no_x = no_x,
+    #             no_y = no_y,
+    #             activations = activations,
+    #             output_activation = output_activation,
+    #             bias = bias
+    #         ),
+    #         arch_args,
+    #         .env = arch_env
+    #     )
+    # )
+    model_expr = rlang::exec(
         nn_module_generator,
-        c(
-            list(
-                hd_neurons = hidden_neurons,
-                no_x = no_x,
-                no_y = no_y,
-                activations = activations,
-                output_activation = output_activation,
-                bias = bias
-            ),
-            arch_args,
-            .env = arch_env
-        )
+
+        # Arguments
+        hd_neurons = hidden_neurons,
+        no_x = no_x,
+        no_y = no_y,
+        activations = activations,
+        output_activation = output_activation,
+        bias = bias,
+
+        # Executing arguments from `nn_arch()`
+        # To sync up with the current environment
+        !!!arch_args,
+        .env = arch_env
     )
 
     model = rlang::eval_tidy(model_expr)()
@@ -695,7 +711,17 @@ train_nn_impl =
     # ---- Optimizer ----
     validate_optimizer(tolower(optimizer))
     optimizer_fn = get(paste0("optim_", tolower(optimizer)), envir = asNamespace("torch"))
-    opt = do.call(optimizer_fn, c(list(params = model$parameters, lr = learn_rate), optimizer_args))
+    # opt = do.call(optimizer_fn, c(list(params = model$parameters, lr = learn_rate), optimizer_args))
+    opt = rlang::exec(
+        optimizer_fn,
+
+        # Arguments
+        params = model$parameters,
+        lr = learn_rate,
+
+        # Extra arguments from `optimizer_args`
+        !!!optimizer_args
+    )
 
     # ---- Loss function ----
     loss_fn = if (is.function(loss)) {
@@ -771,7 +797,7 @@ train_nn_impl =
             )
             if (!is.null(val_loss_history))
                 msg = glue::glue("{msg} - Val Loss: {round(val_loss_history[epoch], 4)}")
-            
+
             message(msg)
         }
 
@@ -822,7 +848,7 @@ train_nn_impl =
             cli::cli_alert_info("Restored best weights from epoch {best_ep}.")
         }
     }
-    
+
     # ---- Trim histories to actual epochs run ----
     actual_epochs = if (!is.null(es_state) && !is.na(es_state$stopped_epoch)) {
         es_state$stopped_epoch
@@ -842,20 +868,25 @@ train_nn_impl =
     x_full_t = .make_tensor(x)
     fitted_tensor = torch::with_no_grad(model(x_full_t))
 
-    if (is_classification) {
+    fitted_values = if (is_classification) {
         fitted_probs = torch::nnf_softmax(fitted_tensor, dim = 2L)
         fitted_classes = torch::torch_argmax(fitted_probs, dim = 2L)
-        fitted_values = factor(
+        factor(
             as.integer(fitted_classes$cpu()),
             levels = seq_along(y_levels),
             labels = y_levels
         )
     } else {
-        fitted_values = as.matrix(fitted_tensor$cpu())
-        if (no_y == 1L) fitted_values = as.vector(fitted_values)
+        if (no_y == 1L) {
+            as.vector(fitted_tensor$cpu())
+        } else {
+            as.matrix(fitted_tensor$cpu())
+        }
     }
 
     # ---- Weight caching ----
+    # For visualizing weight distribution
+    # Allow `cache_weights` to generate
     cached_weights = if (cache_weights) {
         tryCatch(
             lapply(model$parameters, function(p) as.matrix(p$cpu())),
@@ -895,9 +926,6 @@ train_nn_impl =
         class = unique(c(fit_class, "nn_fit"))
     )
 }
-
-
-# ---- Predict methods ----
 
 #' Predict from a trained neural network
 #'
@@ -952,7 +980,7 @@ predict.nn_fit =
     if (!type %in% c("response", "prob")) {
         cli::cli_abort("{.arg type} must be one of {.val response} or {.val prob}.")
     }
-    
+
     newdata = .resolve_predict_newdata(newdata = newdata, new_data = new_data)
 
     device = object$device
@@ -962,6 +990,8 @@ predict.nn_fit =
         identity
     }
 
+    # Early return is a must, when `newdata` / `new_data` is not used
+    # Do not attempt to use `type = "prob"` when classification is not applied
     if (is.null(newdata)) {
         if (type == "prob" && object$is_classification) {
             cli::cli_abort("Cannot compute probabilities without {.arg newdata}. Use fitted values instead.")
@@ -978,26 +1008,31 @@ predict.nn_fit =
     object$model$eval()
     pred_tensor = torch::with_no_grad(object$model(x_new_t))
 
-    if (object$is_classification) {
+    predictions = if (object$is_classification) {
         probs = torch::nnf_softmax(pred_tensor, dim = 2L)
 
         if (type == "prob") {
             prob_matrix = as.matrix(probs$cpu())
             colnames(prob_matrix) = object$y_levels
-            return(prob_matrix)
+            prob_matrix
+        } else {
+            factor(
+                as.integer(torch::torch_argmax(probs, dim = 2L)$cpu()),
+                levels = seq_along(object$y_levels),
+                labels = object$y_levels
+            )
         }
-
-        predictions = factor(
-            as.integer(torch::torch_argmax(probs, dim = 2L)$cpu()),
-            levels = seq_along(object$y_levels),
-            labels = object$y_levels
-        )
     } else {
         if (type == "prob") {
             cli::cli_abort("{.arg type = 'prob'} is only available for classification models.")
         }
-        predictions = as.matrix(pred_tensor$cpu())
-        if (object$no_y == 1L) predictions = as.vector(predictions)
+
+        convert = as.matrix(pred_tensor$cpu())
+        if (object$no_y == 1L) {
+            as.vector(convert)
+        } else {
+            convert
+        }
     }
 
     predictions
