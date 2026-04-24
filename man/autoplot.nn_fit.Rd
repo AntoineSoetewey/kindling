@@ -37,3 +37,4 @@ for a model of class \code{nn_fit}.
 }
 
 }
+\keyword{internal}

@@ -20,6 +20,7 @@
 #'   }
 #' }
 #'
+#' @keywords internal
 #' @export
 #' @method autoplot nn_fit
 autoplot.nn_fit = function(object, ...) {
