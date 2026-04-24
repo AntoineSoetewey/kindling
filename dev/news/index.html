@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">kindling</a>
 
-    <small class="nav-text text-default me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.0.9000</small>
+    <small class="nav-text text-default me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.3.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -22,6 +22,8 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/kindling.html">Getting Started</a></li>
     <li><a class="dropdown-item" href="../articles/similar-packages.html">Similar packages and comparison</a></li>
     <li><a class="dropdown-item" href="../articles/tuning-capabilities.html">Tuning Capabilities</a></li>
+    <li><a class="dropdown-item" href="../articles/special-cases.html">Linear and Logistic Regression (Special Cases)</a></li>
+    <li><a class="dropdown-item" href="../articles/custom-act-fn.html">Custom Activation Function</a></li>
   </ul></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-learn-more" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Learn more</button>
@@ -53,7 +55,22 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="kindling-development-version">kindling (development version)<a class="anchor" aria-label="anchor" href="#kindling-development-version"></a></h2>
 <div class="section level3">
-<h3 id="new-experimental-functions-development-version">New Experimental functions<a class="anchor" aria-label="anchor" href="#new-experimental-functions-development-version"></a></h3>
+<h3 id="new-features-development-version">New features<a class="anchor" aria-label="anchor" href="#new-features-development-version"></a></h3>
+<ul><li><p><code><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot()</a></code> and <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> methods for <code>nn_fit</code> objects now visualize the training loss history, with optional validation loss and an early-stopping marker when early stopping fires.</p></li>
+<li><p><code><a href="../reference/autoplot_diagnostics.html">autoplot_diagnostics()</a></code> and <code><a href="../reference/autoplot_diagnostics.html">plot_diagnostics()</a></code> produce prediction diagnostic plots for <code>nn_fit</code> objects: residuals vs fitted and actual vs fitted panels for regression, one panel per output for multi-output regression, and a confusion matrix heatmap for classification.</p></li>
+</ul></div>
+<div class="section level3">
+<h3 id="ongoing-features-development-version">Ongoing features<a class="anchor" aria-label="anchor" href="#ongoing-features-development-version"></a></h3>
+<ul><li>
+<p>More visualization supports</p>
+<ul><li>NN architecture plot</li>
+</ul></li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.3.0" id="kindling-030">kindling 0.3.0<a class="anchor" aria-label="anchor" href="#kindling-030"></a></h2><p class="text-muted">CRAN release: 2026-03-03</p>
+<div class="section level3">
+<h3 id="new-experimental-functions-0-3-0">New Experimental functions<a class="anchor" aria-label="anchor" href="#new-experimental-functions-0-3-0"></a></h3>
 <ul><li>
 <p>Generalized <code>nn_module()</code> expression generator to generate <code><a href="https://torch.mlverse.org/docs/reference/nn_module.html" class="external-link">torch::nn_module()</a></code> expression for the same sequential NN architectures</p>
 <ul><li>This is how you use to generate <code>nn_module()</code> for 1D-CNN (Convolutional Neural Networks) with 3 hidden layers:</li>
@@ -84,24 +101,35 @@
 <p><code><a href="../reference/gen-nn-train.html">train_nn()</a></code> to execute <code><a href="../reference/nn_module_generator.html">nn_module_generator()</a></code></p>
 <ul><li>
 <code><a href="../reference/nn_arch.html">nn_arch()</a></code> must be supplied to inherit extra arguments from <code><a href="../reference/nn_module_generator.html">nn_module_generator()</a></code> function.</li>
+<li>Allows early stopping if <code>early_stopping</code> is supplied with <code><a href="../reference/early_stop.html">early_stop()</a></code>.</li>
+<li>Supported with several data types: <code>matrix</code>, <code>data.frame</code>, <code>dataset</code> (<a href="https://torch.mlverse.org/docs" class="external-link">torch</a> dataset), and a formula interface.</li>
+<li>
+<code><a href="../reference/train_nnsnip.html">train_nnsnip()</a></code> is now provided to bridge <code><a href="../reference/gen-nn-train.html">train_nn()</a></code> with <a href="https://tidymodels.tidymodels.org" class="external-link">tidymodels</a>
+</li>
+</ul></li>
+<li>
+<p>You can supply customized activation function under <code><a href="../reference/act_funs.html">act_funs()</a></code> with <code><a href="../reference/new_act_fn.html">new_act_fn()</a></code>.</p>
+<ul><li>Activation functions that especially don’t exist on <code>torch::nnf_*()</code>.</li>
+<li>Supply the argument with a function</li>
+<li>The function supplied into <code><a href="../reference/new_act_fn.html">new_act_fn()</a></code> must return a <code>torch</code> tensor object.</li>
+<li>Example: <code>act_funs(new_act_fn(torch::torch_tanh))</code> or <code>act_funs(new_act_fn(\(x) torch::torch_tanh(x)))</code>
+</li>
+<li>Use <code>.name</code> as a displayed name of the custom activation function.</li>
 </ul></li>
 </ul><div class="section level4">
-<h4 id="superset-development-version">Superset<a class="anchor" aria-label="anchor" href="#superset-development-version"></a></h4>
+<h4 id="superset-0-3-0">Superset<a class="anchor" aria-label="anchor" href="#superset-0-3-0"></a></h4>
 <ul><li>
 <p><code><a href="../reference/act_funs.html">act_funs()</a></code> as a DSL function now supports index-style parameter specification for parametric activation functions</p>
 <ul><li>Activation functions can now be modified using <code>[</code> syntax (e.g. <code>softplus[beta = 0.2]</code>)</li>
 <li>The current <code><a href="../reference/args.html">args()</a></code> (e.g. <code>softplus = args(beta = 0.2)</code>) is now superseded by that.</li>
 </ul></li>
 </ul></div>
-</div>
-</div>
-    <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.2.1" id="kindling-021">kindling 0.2.1<a class="anchor" aria-label="anchor" href="#kindling-021"></a></h2>
-<div class="section level3">
-<h3 id="fixes-0-2-1">Fixes<a class="anchor" aria-label="anchor" href="#fixes-0-2-1"></a></h3>
-<ul><li>
-<code>hd_neurons</code> for both <code><a href="../reference/nn_gens.html">ffnn_generator()</a></code> and <code><a href="../reference/nn_gens.html">rnn_generator()</a></code> accepts empty arguments, which implies there’s no hidden layers applied.</li>
+<div class="section level4">
+<h4 id="bug-fixes-0-3-0">Bug Fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-3-0"></a></h4>
+<ul><li><p>No suffix generated for <code>13</code> by <code><a href="../reference/ordinal_gen.html">ordinal_gen()</a></code>. Now fixed.</p></li>
+<li><p><code>hd_neurons</code> for both <code><a href="../reference/nn_gens.html">ffnn_generator()</a></code> and <code><a href="../reference/nn_gens.html">rnn_generator()</a></code> accepts empty arguments, which implies there’s no hidden layers applied.</p></li>
 </ul></div>
+</div>
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.0" id="kindling-020">kindling 0.2.0<a class="anchor" aria-label="anchor" href="#kindling-020"></a></h2><p class="text-muted">CRAN release: 2026-02-04</p>
@@ -142,7 +170,7 @@
 <div class="section level3">
 <h3 id="documentation-0-2-0">Documentation<a class="anchor" aria-label="anchor" href="#documentation-0-2-0"></a></h3>
 <ul><li><p>Add a vignette to showcase the comparison with other similar packages</p></li>
-<li><p>The package description got few clarifications</p></li>
+<li><p>The package description has been clarified</p></li>
 <li><p>Vignette to showcase the comparison with other similar packages</p></li>
 <li>
 <p><code>hidden_neurons</code> parameter now supports discrete values specification</p>
@@ -167,7 +195,7 @@
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Joshua Marie.</p>
+  <p>Developed by Joshua Marie, Antoine Soetewey.</p>
 </div>
 
 <div class="pkgdown-footer-right">

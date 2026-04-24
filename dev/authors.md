@@ -4,6 +4,11 @@
 
 - **Joshua Marie**. Author, maintainer.
 
+- **Antoine Soetewey**. Author.
+  [](https://orcid.org/0000-0001-8159-0804)
+
+- **Harry Thompson**. Contributor.
+
 ## Citation
 
 Source:
@@ -16,5 +21,5 @@ Package to Auto-Train Neural Networks https://kindling.joshuamarie.com
       title = {{kindling}: Higher-Level Interface of 'torch' Package to Auto-Train Neural Networks},
       author = {Joshua Marie},
       year = {2026},
-      note = {R package version 0.2.0.9000},
+      note = {R package version 0.3.0.9000},
     }

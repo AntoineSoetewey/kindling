@@ -2,6 +2,32 @@
 
 ## kindling (development version)
 
+### New features
+
+- [`autoplot()`](https://ggplot2.tidyverse.org/reference/autoplot.html)
+  and [`plot()`](https://rdrr.io/r/graphics/plot.default.html) methods
+  for `nn_fit` objects now visualize the training loss history, with
+  optional validation loss and an early-stopping marker when early
+  stopping fires.
+
+- [`autoplot_diagnostics()`](https://kindling.joshuamarie.com/dev/reference/autoplot_diagnostics.md)
+  and
+  [`plot_diagnostics()`](https://kindling.joshuamarie.com/dev/reference/autoplot_diagnostics.md)
+  produce prediction diagnostic plots for `nn_fit` objects: residuals vs
+  fitted and actual vs fitted panels for regression, one panel per
+  output for multi-output regression, and a confusion matrix heatmap for
+  classification.
+
+### Ongoing features
+
+- More visualization supports
+
+  - NN architecture plot
+
+## kindling 0.3.0
+
+CRAN release: 2026-03-03
+
 ### New Experimental functions
 
 - Generalized `nn_module()` expression generator to generate
@@ -43,6 +69,30 @@
     must be supplied to inherit extra arguments from
     [`nn_module_generator()`](https://kindling.joshuamarie.com/dev/reference/nn_module_generator.md)
     function.
+  - Allows early stopping if `early_stopping` is supplied with
+    [`early_stop()`](https://kindling.joshuamarie.com/dev/reference/early_stop.md).
+  - Supported with several data types: `matrix`, `data.frame`, `dataset`
+    ([torch](https://torch.mlverse.org/docs) dataset), and a formula
+    interface.
+  - [`train_nnsnip()`](https://kindling.joshuamarie.com/dev/reference/train_nnsnip.md)
+    is now provided to bridge
+    [`train_nn()`](https://kindling.joshuamarie.com/dev/reference/gen-nn-train.md)
+    with [tidymodels](https://tidymodels.tidymodels.org)
+
+- You can supply customized activation function under
+  [`act_funs()`](https://kindling.joshuamarie.com/dev/reference/act_funs.md)
+  with
+  [`new_act_fn()`](https://kindling.joshuamarie.com/dev/reference/new_act_fn.md).
+
+  - Activation functions that especially don’t exist on
+    `torch::nnf_*()`.
+  - Supply the argument with a function
+  - The function supplied into
+    [`new_act_fn()`](https://kindling.joshuamarie.com/dev/reference/new_act_fn.md)
+    must return a `torch` tensor object.
+  - Example: `act_funs(new_act_fn(torch::torch_tanh))` or
+    `act_funs(new_act_fn(\(x) torch::torch_tanh(x)))`
+  - Use `.name` as a displayed name of the custom activation function.
 
 #### Superset
 
@@ -56,9 +106,11 @@
     [`args()`](https://kindling.joshuamarie.com/dev/reference/args.md)
     (e.g. `softplus = args(beta = 0.2)`) is now superseded by that.
 
-## kindling 0.2.1
+#### Bug Fixes
 
-### Fixes
+- No suffix generated for `13` by
+  [`ordinal_gen()`](https://kindling.joshuamarie.com/dev/reference/ordinal_gen.md).
+  Now fixed.
 
 - `hd_neurons` for both
   [`ffnn_generator()`](https://kindling.joshuamarie.com/dev/reference/nn_gens.md)
@@ -119,7 +171,7 @@ CRAN release: 2026-02-04
 
 - Add a vignette to showcase the comparison with other similar packages
 
-- The package description got few clarifications
+- The package description has been clarified
 
 - Vignette to showcase the comparison with other similar packages
 
