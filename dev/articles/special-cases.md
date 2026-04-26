@@ -140,8 +140,8 @@ tibble(
     ## # A tibble: 2 × 3
     ##   .metric .estimator .estimate
     ##   <chr>   <chr>          <dbl>
-    ## 1 rmse    standard       4.51 
-    ## 2 rsq     standard       0.945
+    ## 1 rmse    standard       4.09 
+    ## 2 rsq     standard       0.899
 
 ### Comparison with `lm()`
 
@@ -261,7 +261,7 @@ tibble(
     ## # A tibble: 1 × 3
     ##   .metric  .estimator .estimate
     ##   <chr>    <chr>          <dbl>
-    ## 1 accuracy binary         0.744
+    ## 1 accuracy binary         0.767
 
 ### Comparison with `glm()` / `nnet::multinom()`
 
