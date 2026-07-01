@@ -5,7 +5,6 @@
 \alias{reexports}
 \alias{garson}
 \alias{olden}
-\alias{vi_model}
 \title{Objects exported from other packages}
 \keyword{internal}
 \description{
@@ -14,7 +13,5 @@ below to see their documentation.
 
 \describe{
   \item{NeuralNetTools}{\code{\link[NeuralNetTools]{garson}}, \code{\link[NeuralNetTools]{olden}}}
-
-  \item{vip}{\code{\link[vip]{vi_model}}}
 }}
 

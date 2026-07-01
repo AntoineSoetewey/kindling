@@ -38,17 +38,17 @@ Imports:
     dplyr,
     stats,
     NeuralNetTools,
-    vip,
     ggplot2,
     tune,
     dials,
     hardhat,
     lifecycle, 
     coro
-Suggests: 
+Suggests:
     testthat (>= 3.0.0),
     magrittr,
     box,
+    vip,
     recipes,
     workflows,
     rsample,

@@ -26,10 +26,6 @@ NeuralNetTools::garson
 #' @export
 NeuralNetTools::olden
 
-#' @importFrom vip vi_model
-#' @export
-vip::vi_model
-
 #' Extract Weight Matrices from FFNN Model
 #'
 #' @param mod_in A fitted ffnn_fit object
@@ -254,8 +250,9 @@ olden.ffnn_fit = function(mod_in, bar_plot = TRUE, ...) {
 }
 
 #' @section Variable Importance via `{vip}` Package:
-#' You can directly use `vip::vi()` and `vip::vi_model()` to extract the variable
-#' importance from the fitted `ffnn()` model.
+#' If the `{vip}` package (Suggests only) is installed, `kindling` registers a
+#' `vip::vi_model()` method for `"ffnn_fit"` objects, so `vip::vi()` and
+#' `vip::vi_model()` work out of the box.
 #'
 #' @rdname kindling-varimp
 #'
@@ -271,8 +268,8 @@ olden.ffnn_fit = function(mod_in, bar_plot = TRUE, ...) {
 #'
 #' @examples
 #' \donttest{
-#' # kindling also supports `vip::vi()` / `vip::vi_model()`
-#' if (torch::torch_is_installed()) {
+#' # kindling also supports `vip::vi()` / `vip::vi_model()` when {vip} is installed
+#' if (torch::torch_is_installed() && requireNamespace("vip", quietly = TRUE)) {
 #'     model_mlp = ffnn(
 #'         Species ~ .,
 #'         data = iris,
@@ -287,12 +284,9 @@ olden.ffnn_fit = function(mod_in, bar_plot = TRUE, ...) {
 #'         vip::vi(type = 'garson') |>
 #'         vip::vip()
 #' } else {
-#'     message("Torch not fully installed — skipping example")
+#'     message("Torch and/or {vip} not installed — skipping example")
 #' }
 #' }
-#'
-#' @export
-#' @method vi_model ffnn_fit
 vi_model.ffnn_fit = function(object, type = c("olden", "garson"),  ...) {
     type = match.arg(type)
     result = switch(
