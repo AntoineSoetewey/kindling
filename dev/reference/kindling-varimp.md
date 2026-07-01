@@ -62,9 +62,8 @@ A data frame for both "garson" and "olden" classes with columns:
 The data frame is sorted by importance in descending order.
 
 A tibble with columns "Variable" and "Importance" (via
-[`vip::vi()`](https://koalaverse.github.io/vip/reference/vi.html) /
-[`vip::vi_model()`](https://koalaverse.github.io/vip/reference/vi_model.html)
-only).
+[`vip::vi()`](https://rdrr.io/pkg/vip/man/vi.html) /
+[`vip::vi_model()`](https://rdrr.io/pkg/vip/man/vi_model.html) only).
 
 ## Garson's Algorithm for FFNN Models
 
@@ -84,10 +83,9 @@ model.
 
 ## Variable Importance via `{vip}` Package
 
-You can directly use
-[`vip::vi()`](https://koalaverse.github.io/vip/reference/vi.html) and
-[`vip::vi_model()`](https://koalaverse.github.io/vip/reference/vi_model.html)
-to extract the variable importance from the fitted
+You can directly use [`vip::vi()`](https://rdrr.io/pkg/vip/man/vi.html)
+and [`vip::vi_model()`](https://rdrr.io/pkg/vip/man/vi_model.html) to
+extract the variable importance from the fitted
 [`ffnn()`](https://kindling.joshuamarie.com/dev/reference/kindling-basemodels.md)
 model.
 
@@ -136,11 +134,11 @@ if (torch::torch_is_installed()) {
     message("Torch not fully installed — skipping example")
 }
 
-#>        x_names y_names      rel_imp
-#> 1  Sepal.Width       y -0.159138958
-#> 2 Petal.Length       y  0.123691722
-#> 3 Sepal.Length       y -0.121106757
-#> 4  Petal.Width       y  0.007906683
+#>        x_names y_names     rel_imp
+#> 1  Petal.Width       y -0.29015149
+#> 2 Petal.Length       y -0.21715091
+#> 3  Sepal.Width       y  0.17528368
+#> 4 Sepal.Length       y  0.01517951
 # }
 
 # \donttest{

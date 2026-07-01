@@ -10,4 +10,4 @@ to see their documentation.
 
 - vip:
 
-  [`vi_model`](https://koalaverse.github.io/vip/reference/vi_model.html)
+  [`vi_model`](https://rdrr.io/pkg/vip/man/vi_model.html)
