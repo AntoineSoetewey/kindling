@@ -64,12 +64,12 @@ test_that("vi_model method works with ffnn_fit", {
     )
     
     # Test with olden
-    imp_olden = vi_model(model, type = "olden")
+    imp_olden = vip::vi_model(model, type = "olden")
     expect_true(all(c("Variable", "Importance") %in% names(imp_olden)))
     expect_equal(nrow(imp_olden), 4)
-    
+
     # Test with garson
-    imp_garson = vi_model(model, type = "garson")
+    imp_garson = vip::vi_model(model, type = "garson")
     expect_equal(nrow(imp_garson), 4)
     expect_true(all(imp_garson$Importance >= 0))
 })

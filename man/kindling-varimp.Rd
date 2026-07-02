@@ -11,7 +11,7 @@
 
 \method{olden}{ffnn_fit}(mod_in, bar_plot = TRUE, ...)
 
-\method{vi_model}{ffnn_fit}(object, type = c("olden", "garson"), ...)
+vi_model.ffnn_fit(object, type = c("olden", "garson"), ...)
 }
 \arguments{
 \item{mod_in}{A fitted model object of class "ffnn_fit".}
@@ -57,8 +57,9 @@ importance from the fitted \code{ffnn()} model.
 
 \section{Variable Importance via \code{{vip}} Package}{
 
-You can directly use \code{vip::vi()} and \code{vip::vi_model()} to extract the variable
-importance from the fitted \code{ffnn()} model.
+If the \code{{vip}} package (Suggests only) is installed, \code{kindling} registers a
+\code{vip::vi_model()} method for \code{"ffnn_fit"} objects, so \code{vip::vi()} and
+\code{vip::vi_model()} work out of the box.
 }
 
 \examples{
@@ -87,8 +88,8 @@ if (torch::torch_is_installed()) {
 }
 
 \donttest{
-# kindling also supports `vip::vi()` / `vip::vi_model()`
-if (torch::torch_is_installed()) {
+# kindling also supports `vip::vi()` / `vip::vi_model()` when {vip} is installed
+if (torch::torch_is_installed() && requireNamespace("vip", quietly = TRUE)) {
     model_mlp = ffnn(
         Species ~ .,
         data = iris,
@@ -103,10 +104,9 @@ if (torch::torch_is_installed()) {
         vip::vi(type = 'garson') |>
         vip::vip()
 } else {
-    message("Torch not fully installed — skipping example")
+    message("Torch and/or {vip} not installed — skipping example")
 }
 }
-
 }
 \references{
 Beck, M.W. 2018. NeuralNetTools: Visualization and Analysis Tools for Neural Networks. Journal of Statistical Software. 85(11):1-20.
