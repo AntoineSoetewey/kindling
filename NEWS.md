@@ -1,5 +1,13 @@
 # kindling (development version)
 
+## Ongoing features
+
+-  More visualization supports
+
+    -  NN architecture plot
+
+# kindling 0.3.1
+
 ## New features
 
 -   `autoplot()` and `plot()` methods for `nn_fit` objects now visualize the
@@ -10,12 +18,6 @@
     diagnostic plots for `nn_fit` objects: residuals vs fitted and actual vs
     fitted panels for regression, one panel per output for multi-output
     regression, and a confusion matrix heatmap for classification.
-
-## Ongoing features
-
--  More visualization supports
-
-    -  NN architecture plot
 
 # kindling 0.3.0
 
