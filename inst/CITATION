@@ -3,12 +3,15 @@
 bibentry(
     bibtype = "Manual",
     title = paste0("{", meta$Package, "}", ": ", meta$Title),
-    author = person("Joshua", "Marie"),
+    author = c(
+        person("Joshua", "Marie"),
+        person("Antoine", "Soetewey")
+    ),
     year = "2026",
     note = paste("R package version", meta$Version),
     # url = "https://kindling.joshuamarie.com",
     textVersion = paste(
-        "Marie, Joshua (2026).",
+        "Marie, Joshua and Soetewey, Antoine (2026).",
         paste0(meta$Package, ": ", meta$Title),
         "https://kindling.joshuamarie.com"
     )
