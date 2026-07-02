@@ -9,10 +9,7 @@ Authors@R: c(
     person("Antoine", "Soetewey", 
            email = "ant.soetewey@gmail.com", 
            role = "aut",
-           comment = c(ORCID = "0000-0001-8159-0804")),
-    person("Harry", "Thompson", 
-           email = "harry@mayesfield.uk", 
-           role = "ctb")
+           comment = c(ORCID = "0000-0001-8159-0804"))
   )
 Description: Provides a higher-level interface to the 'torch' package for defining,
     training, and fine-tuning neural networks through code generation.
