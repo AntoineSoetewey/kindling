@@ -56,7 +56,7 @@ Within the generated code itself, activation functions are specified through `ac
 
 # AI usage disclosure
 
-Generative AI was used in two disclosed ways. Within the `kindling` codebase, GitHub Copilot is recorded as a co-author on 5 of the repository's 403 commits (a CI workflow file, `NEWS.md` twice, one test file, and `README.Rmd`), visible via `Co-authored-by` trailers in the Git history; this is the complete extent of AI involvement in the package's code and documentation. This paper was also drafted with the assistance of Claude (Anthropic's Claude Code), used for phrasing suggestions, structuring the text, and verifying bibliographic references. All content was critically reviewed and finalized by the authors before submission.
+The authors used Claude (Anthropic) to obtain suggestions for English phrasing and to improve clarity and readability during the writing process. All content was critically reviewed and finalized by the authors.
 
 # Acknowledgements
 
