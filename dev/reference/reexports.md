@@ -7,7 +7,3 @@ to see their documentation.
 
   [`garson`](https://rdrr.io/pkg/NeuralNetTools/man/garson.html),
   [`olden`](https://rdrr.io/pkg/NeuralNetTools/man/olden.html)
-
-- vip:
-
-  [`vi_model`](https://rdrr.io/pkg/vip/man/vi_model.html)
