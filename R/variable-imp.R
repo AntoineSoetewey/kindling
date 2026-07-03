@@ -160,7 +160,7 @@ garson.ffnn_fit = function(mod_in, bar_plot = FALSE, ...) {
             ggplot2::labs(
                 x = "Features",
                 y = "Relative Importance",
-                title = "Variable Importance (Olden Method)"
+                title = "Variable Importance (Garson Method)"
             ) +
             ggplot2::theme_minimal()
         
