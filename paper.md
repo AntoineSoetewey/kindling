@@ -54,7 +54,7 @@ Within the generated code itself, activation functions are specified through `ac
 
 # AI usage disclosure
 
-Generative AI was used in two distinct, disclosed ways. First, within the `kindling` codebase itself, GitHub Copilot is recorded as a co-author on 5 of the repository's 403 commits (touching a CI workflow file, `NEWS.md` twice, one test file, and `README.Rmd`), visible via `Co-authored-by` trailers in the Git history; this is the complete extent of generative-AI involvement in the package's code and documentation, confirmed by the authors. Second, this paper and its bibliography were drafted with the assistance of Claude (Anthropic's Claude Code), reviewed and edited by the human authors before submission. Claims in the bibliography were checked against either the installed packages' own `citation()` output or the Crossref API rather than accepted as generated; the figure was produced by executing `kindling`'s own `ffnn()` and `garson()` functions on the example already used in the package's README, not hand-drawn; and the compiled paper was verified to build cleanly with `pandoc --citeproc`, with all citation keys cross-checked between `paper.md` and `paper.bib`.
+The author used ChatGPT to obtain suggestions for English phrasing and to improve clarity and readability during the writing process. All content was critically reviewed and finalized by the author.
 
 # Figure
 
