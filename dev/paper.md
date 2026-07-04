@@ -224,12 +224,15 @@ Within the generated code itself, activation functions are specified
 through
 [`act_funs()`](https://kindling.joshuamarie.com/dev/reference/act_funs.md),
 a small embedded domain specific language (eDSL) function (akin to
-`{dplyr}'s`pick()`function) based on R's non-standard evaluation (NSE), built with`{rlang}`, that accepts bracket syntax such as`softshrink\[lambd
-=
-0.5\]`for parametric activations, and`new_act_fn()`as an escape hatch for activations with no`torch::nnf\_\*()\`
-equivalent. This trades some NSE complexity in the implementation for a
-call-like syntax at the user level, avoiding nested lists of function
-names and parameter values.
+[dplyr](https://dplyr.tidyverse.org)’s `pick()` function) based on R’s
+non-standard evaluation (NSE), built with
+[rlang](https://rlang.r-lib.org), that accepts bracket syntax such as
+`softshrink[lambd = 0.5]` for parametric activations, and
+[`new_act_fn()`](https://kindling.joshuamarie.com/dev/reference/new_act_fn.md)
+as an escape hatch for activations with no `torch::nnf_*()` equivalent.
+This trades some NSE complexity in the implementation for a call-like
+syntax at the user level, avoiding nested lists of function names and
+parameter values.
 
 # Research impact statement
 
@@ -239,9 +242,9 @@ does not yet have external citations, publications, or third-party
 integrations to report; the evidence below documents community-readiness
 rather than realized adoption, as of this writing (July 2026). It is
 available on CRAN (initial release 0.1.0 on 2026-01-31; current release
-0.3.1), with 1,434 downloads recorded since that release and 278
-downloads in the last month, and the GitHub repository has 27 stars and
-5 forks. Correctness is backed by a test suite of 206
+0.3.1), with 1,511 downloads recorded in total and 337 downloads in the
+last month, and the GitHub repository has 27 stars and 5 forks.
+Correctness is backed by a test suite of 206
 [testthat](https://testthat.r-lib.org) test blocks covering the code
 generators, the direct-training wrappers, the
 [tidymodels](https://tidymodels.tidymodels.org) engines, and the
