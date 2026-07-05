@@ -11,3 +11,7 @@
 ^CRAN-SUBMISSION$
 ^cran-comments\.md$
 ^JOSS_PRECHECK\.md$
+^paper\.
+^paper-.*\.png$
+^paper\.bib$
+^paper\.md$
