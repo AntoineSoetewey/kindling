@@ -1,5 +1,13 @@
 # kindling (development version)
 
+## Ongoing features
+
+-  More visualization supports
+
+    -  NN architecture plot
+
+# kindling 0.3.2
+
 ## Bug fixes
 
 -   `"linear"` used as an `activations`/`output_activation` value no longer
@@ -8,11 +16,14 @@
     instead of behaving as an identity/no-op activation. `"linear"` now
     consistently maps to `identity()` (#21).
 
-## Ongoing features
+-   Fixed the README's `{tidymodels}` example: loading `Ionosphere` via
+    `box::use(mlbench[Ionosphere])` failed because `{mlbench}` does not
+    export its datasets through `NAMESPACE`/`LazyData`. The example now uses
+    `data(Ionosphere, package = "mlbench")` instead.
 
--  More visualization supports
+## Documentation
 
-    -  NN architecture plot
+-   Added missing `@examples` for `act_funs()`, `args()`, and `early_stop()`.
 
 # kindling 0.3.1
 

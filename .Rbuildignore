@@ -4,7 +4,6 @@
 ^\.Rproj\.user$
 ^LICENSE\.md$
 ^README\.Rmd$
-^CODE_OF_CONDUCT\.md$
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
@@ -12,3 +11,7 @@
 ^CRAN-SUBMISSION$
 ^cran-comments\.md$
 ^JOSS_PRECHECK\.md$
+^paper\.
+^paper-.*\.png$
+^paper\.bib$
+^paper\.md$
