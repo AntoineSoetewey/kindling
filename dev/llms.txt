@@ -60,8 +60,21 @@ Or install the development version from GitHub:
 
 # install.packages("pak")
 pak::pak("joshuamarie/kindling")
-## devtools::install_github("joshuamarie/kindling") 
+## devtools::install_github("joshuamarie/kindling")
 ```
+
+## Learn more
+
+- [Getting Started with
+  kindling](https://kindling.joshuamarie.com/articles/kindling.html)
+- [Tuning
+  Capabilities](https://kindling.joshuamarie.com/articles/tuning-capabilities.html)
+- [Custom Activation
+  Function](https://kindling.joshuamarie.com/articles/custom-act-fn.html)
+- [Special Cases: Linear and Logistic
+  Regression](https://kindling.joshuamarie.com/articles/special-cases.html)
+- [Similar Packages and
+  Comparison](https://kindling.joshuamarie.com/articles/similar-packages.html)
 
 ## Usage: Three Levels of Interaction
 
@@ -78,8 +91,8 @@ suits your task.
 library(kindling)
 ```
 
-Before starting, install LibTorch, the backend of PyTorch and the
-[torch](https://torch.mlverse.org/docs) R package:
+Before starting, install LibTorch (the backend used by the
+[torch](https://torch.mlverse.org/docs) R package):
 
 ``` r
 
@@ -159,7 +172,7 @@ model
       NN Model Type           :             FFNN    n_predictors :      4
       Number of Epochs        :              100    n_response   :      3
       Hidden Layer Units      :        10, 15, 7    reg.         :   None
-      Number of Hidden Layers :                3    Device       :    mps
+      Number of Hidden Layers :                3    Device       :    cpu
       Pred. Type              :   classification                 :       
     -----------------------------------------------------------------------
 
@@ -198,8 +211,8 @@ Two kinds of [`predict()`](https://rdrr.io/r/stats/predict.html) usage:
     #>             predicted
     #> actual       setosa versicolor virginica
     #>   setosa         50          0         0
-    #>   versicolor      0         46         4
-    #>   virginica       0          1        49
+    #>   versicolor      0         48         2
+    #>   virginica       0          0        50
     ```
 
 2.  **With `newdata`** simply pass the new data frame as the new
@@ -214,8 +227,8 @@ Two kinds of [`predict()`](https://rdrr.io/r/stats/predict.html) usage:
     #>             predicted
     #> actual       setosa versicolor virginica
     #>   setosa         10          0         0
-    #>   versicolor      0         10         0
-    #>   virginica       0          1         9
+    #>   versicolor      0          9         1
+    #>   virginica       0          0        10
     ```
 
 ### Level 3: Conventional tidymodels Integration
@@ -384,10 +397,10 @@ networks. Two primary algorithms are available:
 
     garson(model, bar_plot = FALSE)
     #>        x_names y_names  rel_imp
-    #> 1  Sepal.Width       y 28.80667
-    #> 2  Petal.Width       y 25.33185
-    #> 3 Sepal.Length       y 23.10922
-    #> 4 Petal.Length       y 22.75226
+    #> 1 Petal.Length       y 30.29959
+    #> 2 Sepal.Length       y 25.50089
+    #> 3  Petal.Width       y 24.56154
+    #> 4  Sepal.Width       y 19.63798
     ```
 
 2.  Olden’s Algorithm
@@ -396,10 +409,10 @@ networks. Two primary algorithms are available:
 
     olden(model, bar_plot = FALSE)
     #>        x_names y_names    rel_imp
-    #> 1  Sepal.Width       y  0.5660366
-    #> 2  Petal.Width       y -0.5193552
-    #> 3 Petal.Length       y -0.4961819
-    #> 4 Sepal.Length       y -0.1262867
+    #> 1 Petal.Length       y -1.1477059
+    #> 2  Petal.Width       y -0.9410617
+    #> 3 Sepal.Length       y  0.5526031
+    #> 4  Sepal.Width       y  0.5260558
     ```
 
 ### Integration with {vip}
@@ -436,6 +449,13 @@ Wickham H (2019). *Advanced R*, 2nd edition. Chapman and Hall/CRC. ISBN
 
 Goodfellow I, Bengio Y, Courville A (2016). *Deep Learning*. MIT Press.
 <https://www.deeplearningbook.org/>.
+
+## Citation
+
+If you use [kindling](https://kindling.joshuamarie.com) in a
+publication, please cite it. Run `citation("kindling")` in R to get the
+current citation, or see the [CITATION
+file](https://github.com/joshuamarie/kindling/blob/main/inst/CITATION).
 
 ## License
 
