@@ -1,8 +1,8 @@
 # DRAFT -- follow-up PR to ropensci-review-tools/pkgcheck
 
-Status: not opened. To be reviewed by maintainers, and ideally green-lit by
-@mpadge in #784 first (see comment draft). Branch to be created from
-ropensci-review-tools/pkgcheck main.
+Status: OPENED 2026-08-02 as
+https://github.com/ropensci-review-tools/pkgcheck/pull/397 (branch
+`torch-install-robust` on the AntoineSoetewey/pkgcheck fork).
 
 ## Proposed Dockerfile change
 

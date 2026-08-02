@@ -1,8 +1,15 @@
 # `torch::install_torch()` segfault investigation -- working notes
 
 Status: **investigation complete on our side; crash not reproducible in any
-public environment; waiting on build log from the affected rOpenSci host.**
+public environment (docker-build matrix ran 2026-08-02, 4/4 negative);
+follow-up posted to #784; robustness PR open as
+[ropensci-review-tools/pkgcheck#397](https://github.com/ropensci-review-tools/pkgcheck/pull/397);
+waiting on build log from the affected rOpenSci host.**
 Last updated: 2026-08-02.
+
+Public follow-ups posted 2026-08-02:
+[#784 comment](https://github.com/ropensci/software-review/issues/784#issuecomment-5158034520),
+[kindling#34 cross-ref](https://github.com/joshuamarie/kindling/issues/34#issuecomment-5158035374).
 
 These notes document the full process, as requested by @mpadge in
 [ropensci/software-review#784](https://github.com/ropensci/software-review/issues/784)
@@ -156,12 +163,19 @@ All variants fix the three diagnostic flaws of §2.1: marker-file `find
 wrong cache dir, and exit-code capture + diagnostics inside the same RUN
 layer (a later layer would never run after a crash).
 
-To run: push this branch (the workflow triggers on push to
-`torch-segfault-followup`, or via `workflow_dispatch`), on a remote with
-Actions enabled. Not yet run as of 2026-08-02 (nothing pushed without
-explicit maintainer approval). Expectation, given §2.2: all four variants
-pass; the value is documentary (and the `gdb` variant doubles as the
-harness we need on the failing host).
+Ran 2026-08-02 on the AntoineSoetewey/kindling fork:
+[run 30748491813](https://github.com/AntoineSoetewey/kindling/actions/runs/30748491813).
+Result: **4/4 negative** (as expected given §2.2):
+
+| variant | result |
+|---|---|
+| `faithful` | `install_torch exit code: 0`, sitrep healthy, `torch_tensor()` OK. First attempt failed at the *initial apt layer* with a transient `r2u.stat.illinois.edu` connection timeout (nothing to do with torch); rerun passed. |
+| `no-arrow` | exit code 0; marker-based file sweep confirms the full libtorch/lantern tree under `torch_install_path()` |
+| `source-torch` | exit code 0 (torch from P3M, bspm disabled) |
+| `gdb` | fresh install under gdb: `[Inferior 1 (process 13) exited normally]`, `No stack.` |
+
+Build logs (artifacts `torch-docker-repro-*`) archived in
+`~/Documents/kindling-torch-segfault-diagnostics/matrix-artifacts/`.
 
 `./server-repro/` contains the piece that can actually catch the crash: a
 single never-failing diagnostic `docker build` for @mpadge to run **on the
@@ -179,7 +193,9 @@ Everything reproducible we have says the install works, and an issue saying
 
 ## 6. Remediation for pkgcheck (the part that actually unblocks reviews)
 
-Draft PR in `./drafts/pkgcheck-dockerfile-pr.md`: keep `install_torch()` but
+Opened 2026-08-02 as
+[ropensci-review-tools/pkgcheck#397](https://github.com/ropensci-review-tools/pkgcheck/pull/397)
+(draft kept in `./drafts/pkgcheck-dockerfile-pr.md`): keep `install_torch()` but
 make the step crash-tolerant, add a sitrep layer so the build log always
 records the resulting state, and set `ENV TORCH_INSTALL "1"` so torch
 self-installs at first load if the files really are missing. This makes the

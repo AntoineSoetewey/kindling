@@ -13,7 +13,7 @@ on:
         branches:
             - torch-segfault-followup
         paths:
-            - dev/torch-segfault/**
+            - dev/torch-segfault/docker/**
             - .github/workflows/torch-segfault-docker-repro.yml
 
 jobs:
