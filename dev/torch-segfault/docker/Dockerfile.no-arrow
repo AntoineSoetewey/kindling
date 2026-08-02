@@ -1,0 +1,33 @@
+# Variant "no-arrow": identical to Dockerfile.faithful but with arrow removed
+# entirely (no r-cran-arrow, no ARROW_S3, no arrow::install_arrow()).
+# Isolates the hypothesis that the arrow::install_arrow() step immediately
+# before install_torch() contributes to the crash.
+
+FROM eddelbuettel/r2u:24.04
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+                sudo \
+                r-cran-bspm \
+        && echo "bspm::enable()" >> /etc/R/Rprofile.site \
+        && echo "options(bspm.sudo=TRUE)" >> /etc/R/Rprofile.site \
+        && echo 'APT::Install-Recommends "false";' > /etc/apt/apt.conf.d/90local-no-recommends \
+        && echo "docker ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/local-docker-user \
+        && chmod 0440 /etc/sudoers.d/local-docker-user \
+        && chgrp 1000 /usr/local/lib/R/site-library \
+        && install.r remotes
+
+# torch as r2u/bspm system package (r-cran-torch), same as pkgcheck
+RUN install2.r torch
+
+RUN touch /tmp/torch-install-marker && sleep 1
+
+RUN Rscript -e 'torch::install_torch()'; ec=$?; \
+    echo "=== install_torch exit code: $ec ==="; \
+    echo "=== torch::torch_install_path() contents ==="; \
+    Rscript -e 'p <- torch::torch_install_path(); cat(p, "\n"); print(list.files(p, recursive = TRUE))' || true; \
+    echo "=== files created since marker ==="; \
+    find / -xdev -newer /tmp/torch-install-marker \( -iname "*torch*" -o -iname "*lantern*" \) -type f 2>/dev/null | grep -v '^/proc' || true; \
+    exit $ec
+
+RUN Rscript -e 'torch::install_torch_sitrep()'
+RUN Rscript -e 'print(torch::torch_tensor(1:3))'

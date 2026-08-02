@@ -1,0 +1,59 @@
+# Variant "faithful": replay the torch-relevant steps of the pkgcheck
+# Dockerfile (ropensci-review-tools/pkgcheck @ af70fe5c) in the same order,
+# inside a real `docker build` (the context in which the segfault was
+# reported), not a running container.
+#
+# Deviations from the real pkgcheck Dockerfile, for build time only:
+# - the two large apt-get blocks (GitHub-runner system libraries) are skipped;
+# - install2.r installs only arrow + torch, not the full package list;
+# - ctags/gh/nix/Julia/rust/cmdstan/reticulate steps are skipped.
+# Everything torch-adjacent is kept verbatim: bspm/r2u system-package
+# installation of torch (r-cran-torch), ARROW_S3, arrow::install_arrow()
+# immediately before, root build context, and the exact
+# `Rscript -e 'torch::install_torch()'` invocation.
+
+FROM eddelbuettel/r2u:24.04
+
+# pkgcheck Dockerfile lines 12-21, verbatim
+RUN apt-get update && apt-get install -y --no-install-recommends \
+                sudo \
+                r-cran-bspm \
+        && echo "bspm::enable()" >> /etc/R/Rprofile.site \
+        && echo "options(bspm.sudo=TRUE)" >> /etc/R/Rprofile.site \
+        && echo 'APT::Install-Recommends "false";' > /etc/apt/apt.conf.d/90local-no-recommends \
+        && echo "docker ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/local-docker-user \
+        && chmod 0440 /etc/sudoers.d/local-docker-user \
+        && chgrp 1000 /usr/local/lib/R/site-library \
+        && install.r remotes
+
+# pkgcheck line 254
+ENV ARROW_S3 "ON"
+
+# pkgcheck line 266: with bspm enabled this resolves to apt system packages
+# (r-cran-arrow, r-cran-torch), the same binaries the pkgcheck image gets
+RUN install2.r arrow torch
+
+# pkgcheck line 318
+RUN Rscript -e 'arrow::install_arrow()'
+
+# Marker file so the post-hoc filesystem sweep can use `-newer` against a
+# fixed timestamp (the old repro compared against /tmp, whose mtime moves)
+RUN touch /tmp/torch-install-marker && sleep 1
+
+# pkgcheck line 321 -- the step reported to segfault on the rOpenSci server.
+# Capture the real exit code, then print diagnostics in the SAME layer (a
+# later layer would never run if this crashes), and finally propagate the
+# exit code so the build fails exactly like the real one would.
+RUN Rscript -e 'torch::install_torch()'; ec=$?; \
+    echo "=== install_torch exit code: $ec ==="; \
+    echo "=== torch::torch_install_path() contents (the real install target; NOT R_user_dir cache) ==="; \
+    Rscript -e 'p <- torch::torch_install_path(); cat(p, "\n"); print(list.files(p, recursive = TRUE))' || true; \
+    echo "=== files created since marker ==="; \
+    find / -xdev -newer /tmp/torch-install-marker \( -iname "*torch*" -o -iname "*lantern*" \) -type f 2>/dev/null | grep -v '^/proc' || true; \
+    echo "=== host-visible environment ==="; \
+    uname -a; ldd --version | head -1; grep -m1 flags /proc/cpuinfo | tr ' ' '\n' | grep -E 'avx|sse4' | paste -sd' ' -; \
+    exit $ec
+
+# Only reached if install_torch exited 0: verify state in fresh processes
+RUN Rscript -e 'torch::install_torch_sitrep()'
+RUN Rscript -e 'print(torch::torch_tensor(1:3))'

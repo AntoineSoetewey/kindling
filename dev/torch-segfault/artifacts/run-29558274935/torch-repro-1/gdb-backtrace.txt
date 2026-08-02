@@ -1,0 +1,25 @@
+warning: Error disabling address space randomization: Operation not permitted
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+process 1127 is executing new program: /usr/bin/bash
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+[Detaching after fork from child process 1130]
+[Detaching after fork from child process 1131]
+[Detaching after fork from child process 1132]
+[Detaching after fork from child process 1135]
+process 1127 is executing new program: /usr/lib/R/bin/exec/R
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+[Detaching after vfork from child process 1139]
+[Detaching after vfork from child process 1141]
+[New Thread 0x7f99c1f0f6c0 (LWP 1143)]
+[Detaching after vfork from child process 1144]
+[Detaching after vfork from child process 1158]
+[Detaching after vfork from child process 1160]
+[Detaching after vfork from child process 1161]
+[Detaching after vfork from child process 1163]
+[Detaching after vfork from child process 1164]
+[Thread 0x7f99c1f0f6c0 (LWP 1143) exited]
+[Inferior 1 (process 1127) exited normally]
+No stack.
