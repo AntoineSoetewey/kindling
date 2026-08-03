@@ -8,6 +8,7 @@
 ^docs$
 ^pkgdown$
 ^\.github$
+^dev$
 ^CRAN-SUBMISSION$
 ^cran-comments\.md$
 ^JOSS_PRECHECK\.md$

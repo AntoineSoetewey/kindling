@@ -1,0 +1,31 @@
+warning: Error disabling address space randomization: Operation not permitted
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+process 468 is executing new program: /usr/bin/bash
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+[Detaching after fork from child process 471]
+[Detaching after fork from child process 472]
+[Detaching after fork from child process 473]
+[Detaching after fork from child process 476]
+process 468 is executing new program: /usr/local/lib/R/bin/exec/R
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+[New Thread 0x7fa6aeb1b6c0 (LWP 480)]
+[New Thread 0x7fa6a59ff6c0 (LWP 481)]
+[New Thread 0x7fa69c7ff6c0 (LWP 482)]
+[Detaching after vfork from child process 483]
+[Detaching after vfork from child process 485]
+[New Thread 0x7fa6925da6c0 (LWP 487)]
+[Detaching after vfork from child process 488]
+[Detaching after vfork from child process 505]
+[Detaching after vfork from child process 507]
+[Detaching after vfork from child process 508]
+[Detaching after vfork from child process 510]
+[Detaching after vfork from child process 511]
+[Thread 0x7fa6925da6c0 (LWP 487) exited]
+[Thread 0x7fa69c7ff6c0 (LWP 482) exited]
+[Thread 0x7fa6a59ff6c0 (LWP 481) exited]
+[Thread 0x7fa6aeb1b6c0 (LWP 480) exited]
+[Inferior 1 (process 468) exited normally]
+No stack.
