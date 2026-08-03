@@ -1,15 +1,44 @@
 # `torch::install_torch()` segfault investigation -- working notes
 
-Status: **investigation complete on our side; crash not reproducible in any
-public environment (docker-build matrix ran 2026-08-02, 4/4 negative);
-follow-up posted to #784; robustness PR open as
-[ropensci-review-tools/pkgcheck#397](https://github.com/ropensci-review-tools/pkgcheck/pull/397);
-waiting on build log from the affected rOpenSci host.**
-Last updated: 2026-08-02.
+Status: **resolved in substance on the pkgcheck side.** Crash not
+reproducible in any public environment (docker-build matrix ran 2026-08-02,
+4/4 negative). Our PR
+[ropensci-review-tools/pkgcheck#397](https://github.com/ropensci-review-tools/pkgcheck/pull/397)
+was closed by @mpadge as "too Claude-verbose", but its core fix was adopted:
+he merged [#398](https://github.com/ropensci-review-tools/pkgcheck/pull/398)
+(2026-08-03 10:22 UTC) adding `ENV TORCH_INSTALL="1"` to the Dockerfile,
+citing #397. Root cause of the original segfault remains unconfirmed (no
+server log/backtrace received); upstream issue stays unfiled.
+Last updated: 2026-08-03.
 
 Public follow-ups posted 2026-08-02:
 [#784 comment](https://github.com/ropensci/software-review/issues/784#issuecomment-5158034520),
 [kindling#34 cross-ref](https://github.com/joshuamarie/kindling/issues/34#issuecomment-5158035374).
+
+2026-08-03 developments:
+
+- @mpadge's [closing comment on #397](https://github.com/ropensci-review-tools/pkgcheck/pull/397#issuecomment-5165052653)
+  reports that even after the build-time `install_torch()`, `library(torch)`
+  interactively prompted to download "additional software". Note for the
+  record: the two files in his paste are
+  `libtorch-shared-with-deps-2.8.0+cpu.zip` and
+  `lantern-0.17.0+cpu+x86_64-Linux.zip` -- i.e. the *same* full runtime pair
+  `install_torch()` installs, not extra tools. `library(torch)` re-prompting
+  means torch found no (valid) installation at load time, consistent with
+  the build-time layer having been lost (segfault -> discarded layer) on the
+  server build. His "hardware probing" speculation doesn't match the
+  installer's logic (the cpu/cuda choice only selects the download URL).
+- Holding label removed by new EiC @adamhsparks, who re-triggered the bot
+  check on #784 at 03:00 UTC. That check ran **before** the #398 fix and
+  failed with the torch-missing signature (coverage 39.4%, R CMD check
+  build failure) -- as predicted in §3 (two Tuesday server rebuilds had
+  passed since the manual patch).
+- pkgcheck image rebuild with #398 in flight:
+  [run 30805282686](https://github.com/ropensci-review-tools/pkgcheck/actions/runs/30805282686).
+  The review-bot server picks the change up at its own rebuild (Tuesdays
+  00:01 UTC, i.e. 2026-08-04), unless redeployed manually before that.
+- Process lesson recorded: upstream contributions should be minimal and
+  terse -- small diff, short PR body ("too Claude-verbose" feedback).
 
 These notes document the full process, as requested by @mpadge in
 [ropensci/software-review#784](https://github.com/ropensci/software-review/issues/784)
@@ -216,7 +245,8 @@ happens once the thread is resolved):
 
 1. ~~Remove `.github/workflows/torch-segfault-repro.yml`~~ (done on this
    branch, superseded by the docker-build workflow).
-2. After the pkgcheck fix lands and mpadge confirms a green rebuild: remove
+2. After the next kindling bot check on #784 passes (i.e. the server runs
+   an image containing #398): remove
    `.github/workflows/torch-segfault-docker-repro.yml`.
 3. Keep `dev/torch-segfault/` (notes + artifacts) as the process record for
    the rOpenSci skill/blog-post follow-up; or move it out of the repo once
