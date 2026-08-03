@@ -1,14 +1,17 @@
 # `torch::install_torch()` segfault investigation -- working notes
 
-Status: **resolved in substance on the pkgcheck side.** Crash not
-reproducible in any public environment (docker-build matrix ran 2026-08-02,
-4/4 negative). Our PR
-[ropensci-review-tools/pkgcheck#397](https://github.com/ropensci-review-tools/pkgcheck/pull/397)
-was closed by @mpadge as "too Claude-verbose", but its core fix was adopted:
-he merged [#398](https://github.com/ropensci-review-tools/pkgcheck/pull/398)
-(2026-08-03 10:22 UTC) adding `ENV TORCH_INSTALL="1"` to the Dockerfile,
-citing #397. Root cause of the original segfault remains unconfirmed (no
-server log/backtrace received); upstream issue stays unfiled.
+Status: **RESOLVED, 2026-08-03.** The bot check on #784 is
+[green again](https://github.com/ropensci/software-review/issues/784#issuecomment-5167023176)
+(coverage 88.7%, R CMD check clean) after @mpadge rebuilt and redeployed the
+bot server with `ENV TORCH_INSTALL="1"` baked into the pkgcheck image
+([pkgcheck#398](https://github.com/ropensci-review-tools/pkgcheck/pull/398),
+adopting the core of our closed
+[pkgcheck#397](https://github.com/ropensci-review-tools/pkgcheck/pull/397)).
+The crash was never reproducible in any public environment (docker-build
+matrix 2026-08-02: 4/4 negative), its root cause remains unconfirmed (no
+server log/backtrace was received), and the upstream issue template stays
+unfiled by design. Temporary repro workflows removed; this directory is the
+preserved process record for the rOpenSci skill / blog-post follow-up.
 Last updated: 2026-08-03.
 
 Public follow-ups posted 2026-08-02:
@@ -245,9 +248,12 @@ happens once the thread is resolved):
 
 1. ~~Remove `.github/workflows/torch-segfault-repro.yml`~~ (done on this
    branch, superseded by the docker-build workflow).
-2. After the next kindling bot check on #784 passes (i.e. the server runs
+2. ~~After the next kindling bot check on #784 passes (i.e. the server runs
    an image containing #398): remove
-   `.github/workflows/torch-segfault-docker-repro.yml`.
+   `.github/workflows/torch-segfault-docker-repro.yml`~~ (done 2026-08-03,
+   after the green check linked above; run logs remain public at
+   [30748491813](https://github.com/AntoineSoetewey/kindling/actions/runs/30748491813)
+   and archived locally).
 3. Keep `dev/torch-segfault/` (notes + artifacts) as the process record for
    the rOpenSci skill/blog-post follow-up; or move it out of the repo once
    the blog post exists. `dev/` is in `.Rbuildignore` either way.
