@@ -36,7 +36,7 @@ extract_ffnn_weights = function(mod_in) {
     if (!is.null(mod_in$cached_weights)) {
         return(mod_in$cached_weights)
     }
-    
+
     model = mod_in$model
     n_hidden = length(mod_in$hidden_neurons)
     input_layer = model$fc1
@@ -50,7 +50,7 @@ extract_ffnn_weights = function(mod_in) {
             intermediate_weights[[i]] = as.matrix(layer$weight$cpu())
         }
     }
-    
+
     list(
         input = W_input,
         output = W_output,
@@ -86,12 +86,12 @@ extract_ffnn_weights = function(mod_in) {
 #'         verbose = FALSE,
 #'         cache_weights = TRUE
 #'     )
-#'     
+#'
 #'     # Directly use `NeuralNetTools::garson`
 #'     model_mlp |>
 #'         garson()
-#'     
-#'     # Directly use `NeuralNetTools::olden`    
+#'
+#'     # Directly use `NeuralNetTools::olden`
 #'     model_mlp |>
 #'         olden()
 #' } else {
@@ -105,15 +105,15 @@ garson.ffnn_fit = function(mod_in, bar_plot = FALSE, ...) {
     if (!requireNamespace("torch", quietly = TRUE)) {
         cli::cli_abort("Package {.pkg torch} is required but not installed.")
     }
-    
+
     weights = extract_ffnn_weights(mod_in)
-    
+
     W_in = abs(t(weights$input))
     W_out = abs(weights$output)
-    
+
     n_features = nrow(W_in)
     n_outputs = nrow(W_out)
-    
+
     if (length(weights$intermediate) > 0) {
         W_propagated = W_in
         for (W_layer in weights$intermediate) {
@@ -123,7 +123,7 @@ garson.ffnn_fit = function(mod_in, bar_plot = FALSE, ...) {
     } else {
         W_combined = W_in
     }
-    
+
     importance = numeric(n_features)
     for (i in seq_len(n_features)) {
         total = 0
@@ -134,24 +134,24 @@ garson.ffnn_fit = function(mod_in, bar_plot = FALSE, ...) {
         }
         importance[i] = total
     }
-    
+
     total_importance = sum(importance)
     if (total_importance > 0) {
         importance = (importance / total_importance) * 100
     }
-    
+
     out_gar = data.frame(
         x_names = mod_in$feature_names,
         y_names = mod_in$response_name,
         rel_imp = importance,
         stringsAsFactors = FALSE
     )
-    
+
     out_gar = out_gar[order(out_gar$rel_imp, decreasing = TRUE), ]
     rownames(out_gar) = NULL
-    
+
     class(out_gar) = c("garson", "data.frame")
-    
+
     if (bar_plot && requireNamespace("ggplot2", quietly = TRUE)) {
         p = ggplot2::ggplot(out_gar) +
             ggplot2::aes(x = reorder(x_names, rel_imp), y = rel_imp) +
@@ -163,10 +163,10 @@ garson.ffnn_fit = function(mod_in, bar_plot = FALSE, ...) {
                 title = "Variable Importance (Garson Method)"
             ) +
             ggplot2::theme_minimal()
-        
+
         print(p)
     }
-    
+
     out_gar
 }
 
@@ -186,15 +186,15 @@ olden.ffnn_fit = function(mod_in, bar_plot = TRUE, ...) {
     if (!requireNamespace("torch", quietly = TRUE)) {
         cli::cli_abort("Package {.pkg torch} is required but not installed.")
     }
-    
+
     weights = extract_ffnn_weights(mod_in)
-    
+
     W_in = t(weights$input)
     W_out = weights$output
-    
+
     n_features = nrow(W_in)
     n_outputs = nrow(W_out)
-    
+
     if (length(weights$intermediate) > 0) {
         W_propagated = W_in
         for (W_layer in weights$intermediate) {
@@ -204,33 +204,33 @@ olden.ffnn_fit = function(mod_in, bar_plot = TRUE, ...) {
     } else {
         W_combined = W_in
     }
-    
+
     importance_matrix = matrix(0, nrow = n_features, ncol = n_outputs)
-    
+
     for (i in seq_len(n_features)) {
         for (o in seq_len(n_outputs)) {
             importance_matrix[i, o] = sum(W_combined[i, ] * W_out[o, ])
         }
     }
-    
+
     importance = if (n_outputs > 1) {
         rowMeans(importance_matrix)
     } else {
         importance_matrix[, 1]
     }
-    
+
     out_old = data.frame(
         x_names = mod_in$feature_names,
         y_names = mod_in$response_name,
         rel_imp = importance,
         stringsAsFactors = FALSE
     )
-    
+
     out_old = out_old[order(abs(out_old$rel_imp), decreasing = TRUE), ]
     rownames(out_old) = NULL
-    
+
     class(out_old) = c("olden", "data.frame")
-    
+
     if (bar_plot && requireNamespace("ggplot2", quietly = TRUE)) {
         p = ggplot2::ggplot(out_old) +
             ggplot2::aes(x = reorder(x_names, rel_imp), y = rel_imp) +
@@ -242,10 +242,10 @@ olden.ffnn_fit = function(mod_in, bar_plot = TRUE, ...) {
                 title = "Variable Importance (Olden Method)"
             ) +
             ggplot2::theme_minimal()
-        
+
         print(p)
     }
-    
+
     out_old
 }
 
@@ -294,7 +294,7 @@ vi_model.ffnn_fit = function(object, type = c("olden", "garson"),  ...) {
         olden = olden(object, bar_plot = FALSE, ...),
         garson = garson(object, bar_plot = FALSE, ...)
     )
-    
+
     if (requireNamespace("tibble", quietly = TRUE)) {
         tibble::tibble(
             Variable = result$x_names,

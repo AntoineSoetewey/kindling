@@ -94,4 +94,3 @@ test_that("mlp_kindling supports tune placeholders", {
 
     expect_s3_class(spec, "mlp_kindling")
 })
-

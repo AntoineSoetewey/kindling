@@ -74,12 +74,12 @@ if (torch::torch_is_installed()) {
         verbose = FALSE,
         cache_weights = TRUE
     )
-    
+
     # Directly use `NeuralNetTools::garson`
     model_mlp |>
         garson()
-    
-    # Directly use `NeuralNetTools::olden`    
+
+    # Directly use `NeuralNetTools::olden`
     model_mlp |>
         olden()
 } else {

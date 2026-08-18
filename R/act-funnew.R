@@ -12,9 +12,9 @@
 #'   E.g. `\(x) torch::torch_tanh(x)`.
 #' @param probe Logical. If `TRUE` (default), runs a dry-run with a small
 #'   dummy tensor at definition time to catch obvious errors early.
-#' @param .name A string to be stored in an attribute. Nothing special, except it is 
-#'   used when displaying the info of a trained neural network model. 
-#'   Default is `"<custom>"`. 
+#' @param .name A string to be stored in an attribute. Nothing special, except it is
+#'   used when displaying the info of a trained neural network model.
+#'   Default is `"<custom>"`.
 #'
 #' @return An object of class `c("custom_activation", "parameterized_activation")`,
 #'   compatible with `act_funs()`.
@@ -26,7 +26,7 @@
 #' act_funs(new_act_fn(\(x) torch::nnf_silu(x)))
 #' }
 #' }
-#' 
+#'
 #' @export
 new_act_fn = function(fn, probe = TRUE, .name = "<custom>") {
     if (!is.function(fn)) {
@@ -35,7 +35,7 @@ new_act_fn = function(fn, probe = TRUE, .name = "<custom>") {
             i = "Use a lambda like {.code \\(x) torch::torch_tanh(x)}."
         ), class = "custom_activation_type_error")
     }
-    
+
     fn_formals = formals(fn)
     if (length(fn_formals) < 1L) {
         cli_abort(c(
@@ -43,7 +43,7 @@ new_act_fn = function(fn, probe = TRUE, .name = "<custom>") {
             i = "Use a lambda like {.code \\(x) torch::torch_tanh(x)}."
         ), class = "custom_activation_arity_error")
     }
-    
+
     # ---- Dry-run probe at definition time ----
     if (probe) {
         if (!requireNamespace("torch", quietly = TRUE)) {
@@ -53,7 +53,7 @@ new_act_fn = function(fn, probe = TRUE, .name = "<custom>") {
             ))
         } else {
             # Prepare a tiny 1-D tensor to validate
-            dummy = torch::torch_zeros(2L)  
+            dummy = torch::torch_zeros(2L)
             out = torch::with_no_grad(
                 tryCatch(
                     fn(dummy),
@@ -69,17 +69,17 @@ new_act_fn = function(fn, probe = TRUE, .name = "<custom>") {
             .assert_tensor_output(out, context = "Dry-run")
         }
     }
-    
+
     # ---- Build the call-time type-guarded wrapper ----
     guarded_fn = function(x) {
         out = fn(x)
         .assert_tensor_output(out, context = "Custom activation output")
         out
     }
-    
+
     structure(
         list(),
-        act_fn = guarded_fn, 
+        act_fn = guarded_fn,
         act_name = .name,
         class = c("custom_activation", "parameterized_activation")
     )

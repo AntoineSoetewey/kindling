@@ -502,7 +502,7 @@ if (torch::torch_is_installed()) {
     # torch dataset method — labels come from the dataset itself
     iris_cls_dataset = torch::dataset(
         name = "iris_cls_dataset",
-        
+
         initialize = function(data = iris) {
             self$x = torch::torch_tensor(
                 as.matrix(data[, 1:4]),
@@ -514,16 +514,16 @@ if (torch::torch_is_installed()) {
                 dtype = torch::torch_long()
             )
         },
-        
+
         .getitem = function(i) {
             list(self$x[i, ], self$y[i])
         },
-        
+
         .length = function() {
             self$x$size(1)
         }
     )()
-    
+
     model_nn_ds = train_nn(
         x = iris_cls_dataset,
         hidden_neurons = c(32, 10),
@@ -535,10 +535,10 @@ if (torch::torch_is_installed()) {
         validation_split = 0.2,
         verbose = TRUE
     )
-    
+
     pred_nn = predict(model_nn_ds, iris_cls_dataset)
     class_preds = c("Setosa", "Versicolor", "Virginica")[predict(model_nn_ds, iris_cls_dataset)]
-    
+
     # Confusion Matrix
     table(actual = iris$Species, pred = class_preds)
 }

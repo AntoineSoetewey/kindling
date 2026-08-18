@@ -23,16 +23,16 @@ regularizer = function(model, penalty, mixture = 0.5) {
             dtype = torch::torch_float32()
         ))
     }
-    
+
     reg_loss = torch::torch_tensor(
         0,
         device = model$parameters[[1]]$device,
         dtype = torch::torch_float32()
     )
-    
+
     for (param in model$parameters) {
-        if (length(param$size()) <= 1) next 
-        
+        if (length(param$size()) <= 1) next
+
         if (mixture == 1) {
             reg_loss = reg_loss + torch::torch_sum(torch::torch_abs(param))
         } else if (mixture == 0) {
@@ -43,7 +43,7 @@ regularizer = function(model, penalty, mixture = 0.5) {
             reg_loss = reg_loss + mixture * l1 + (1 - mixture) * l2
         }
     }
-    
+
     penalty * reg_loss
 }
 
@@ -61,13 +61,13 @@ validate_regularization = function(penalty, mixture) {
             x = "You provided {.val {penalty}}."
         ))
     }
-    
+
     if (mixture < 0 || mixture > 1) {
         cli::cli_abort(c(
             "{.arg mixture} must be between 0 and 1.",
             x = "You provided {.val {mixture}}."
         ))
     }
-    
+
     invisible(NULL)
 }

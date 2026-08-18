@@ -55,8 +55,15 @@ check_scalar_number = function(x, arg, min = -Inf, max = Inf,
     }
     too_high = if (max_open) x >= max else x > max
     if (x < min || too_high) {
+        upper = if (!is.finite(max)) {
+            ""
+        } else if (max_open) {
+            paste0(" and below ", max)
+        } else {
+            paste0(" and at most ", max)
+        }
         cli::cli_abort(
-            "{.arg {arg}} must be at least {.val {min}}{if (is.finite(max)) paste0(' and ', if (max_open) 'below ' else 'at most ', max) else ''}, not {.val {x}}.",
+            "{.arg {arg}} must be at least {.val {min}}{upper}, not {.val {x}}.",
             class = "kindling_input_error"
         )
     }

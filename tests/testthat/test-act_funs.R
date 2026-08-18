@@ -5,20 +5,20 @@ skip_if_no_torch = function() {
 
 test_that("args() returns activation_args class", {
     skip_if_no_torch()
-    
+
     expect_warning({ res = kindling::args(dim = 2L) }, class = "lifecycle_warning_deprecated")
     expect_s3_class(res, "activation_args")
 })
 
 test_that("args() is deprecated", {
     skip_if_no_torch()
-    
+
     expect_warning(args(dim = 2L), class = "lifecycle_warning_deprecated")
 })
 
 test_that("args() errors on unnamed params", {
     skip_if_no_torch()
-    
+
     expect_warning(
         expect_error(args(1L), class = "activation_args_error"),
         class = "lifecycle_warning_deprecated"

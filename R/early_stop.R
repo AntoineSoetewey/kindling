@@ -1,8 +1,8 @@
 #' Early Stopping Specification
-#' 
+#'
 #' @description
-#' `early_stop()` is a helper function to be supplied on `early_stopping` arguments. 
-#' 
+#' `early_stop()` is a helper function to be supplied on `early_stopping` arguments.
+#'
 #' @param patience Integer. Epochs to wait after last improvement. Default `5`.
 #' @param min_delta Numeric. Minimum improvement to qualify as better. Default `1e-4`.
 #' @param restore_best_weights Logical. Restore weights from best epoch. Default `TRUE`.
@@ -23,17 +23,16 @@ early_stop =
         min_delta = 1e-4,
         restore_best_weights = TRUE,
         monitor = "val_loss"
-    ) 
-{
+    ) {
     monitor = rlang::arg_match(monitor, c("val_loss", "train_loss"))
-    
+
     if (!is.numeric(patience) || patience < 1L) {
         cli::cli_abort("{.arg patience} must be a positive integer.")
     }
     if (!is.numeric(min_delta) || min_delta < 0) {
         cli::cli_abort("{.arg min_delta} must be non-negative.")
     }
-    
+
     structure(
         list(
             patience = as.integer(patience),

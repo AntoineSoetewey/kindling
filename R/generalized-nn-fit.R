@@ -843,7 +843,11 @@ train_nn_impl =
         if (!is.null(initial_model)) {
             if (initial_model$no_x != no_x || initial_model$no_y != no_y) {
                 cli::cli_abort(
-                    "{.arg initial_model} was trained for {initial_model$no_x} predictors / {initial_model$no_y} outputs, but the supplied data has {no_x} / {no_y}.",
+                    c(
+                        "{.arg initial_model} is incompatible with the supplied data.",
+                        x = "It was trained for {initial_model$no_x} predictor{?s} and {initial_model$no_y} output{?s},",
+                        x = "but the data has {no_x} predictor{?s} and {no_y} output{?s}."
+                    ),
                     class = "kindling_input_error"
                 )
             }
@@ -858,21 +862,6 @@ train_nn_impl =
         }
 
         arch_env = if (!is.null(arch)) attr(arch, "env") else parent.frame()
-        # model_expr = do.call(
-        #     nn_module_generator,
-        #     c(
-        #         list(
-        #             hd_neurons = hidden_neurons,
-        #             no_x = no_x,
-        #             no_y = no_y,
-        #             activations = activations,
-        #             output_activation = output_activation,
-        #             bias = bias
-        #         ),
-        #         arch_args,
-        #         .env = arch_env
-        #     )
-        # )
         model_expr = rlang::exec(
             nn_module_generator,
 
@@ -951,7 +940,6 @@ train_nn_impl =
         # ---- Optimizer ----
         validate_optimizer(tolower(optimizer))
         optimizer_fn = get(paste0("optim_", tolower(optimizer)), envir = asNamespace("torch"))
-        # opt = do.call(optimizer_fn, c(list(params = model$parameters, lr = learn_rate), optimizer_args))
         opt = rlang::exec(
             optimizer_fn,
 
@@ -1049,13 +1037,10 @@ train_nn_impl =
 
             # ---- Verbose ----
             if (verbose && (epoch %% max(1L, epochs %/% 10L) == 0L || epoch == epochs)) {
-                # msg = glue::glue(
-                #     "Epoch {epoch}/{epochs} - Loss: {round(loss_history[epoch], 4)}"
-                # )
-                msg = sprintf("Epoch %d/%d - Loss: %.4f", epoch, epochs, round(loss_history[epoch], 4))
-                if (!is.null(val_loss_history))
-                    # msg = glue::glue("{msg} - Val Loss: {round(val_loss_history[epoch], 4)}")
-                    sprintf("Epoch {epoch}/{epochs} - Loss: {round(loss_history[epoch], 4)}")
+                msg = sprintf("Epoch %d/%d - Loss: %.4f", epoch, epochs, loss_history[epoch])
+                if (!is.null(val_loss_history)) {
+                    msg = paste0(msg, sprintf(" - Val Loss: %.4f", val_loss_history[epoch]))
+                }
 
                 message(msg)
             }

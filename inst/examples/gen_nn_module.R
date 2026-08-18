@@ -13,7 +13,7 @@ nn_module_generator(
             out_channels = .out,
             kernel_size = 3L,
             stride = 1L,
-            padding = 1L 
+            padding = 1L
         )
     },
     after_output_transform = ~ .$mean(dim = 2),
@@ -35,7 +35,7 @@ nn_module_generator(
             out_channels = .out,
             kernel_size = 3L,
             stride = 1L,
-            padding = 1L 
+            padding = 1L
         )
     },
     after_output_transform = ~ .$mean(dim = 2),

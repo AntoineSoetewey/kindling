@@ -1,0 +1,30 @@
+linters: linters_with_defaults(
+    # ---- kindling house style ----
+    # Indentation: several functions are laid out as
+    #   name =
+    #       function(
+    #           args
+    #       ) {
+    #       body at 4 spaces, closing brace at column 0
+    # which is internally consistent but cannot be expressed through
+    # indentation_linter's options, so the linter is switched off.
+    indentation_linter = NULL,
+    # Assignment uses `=` rather than `<-` package-wide.
+    assignment_linter = assignment_linter(operator = "="),
+    # 80 is too tight for cli message strings; 120 is the working limit.
+    line_length_linter = line_length_linter(120L),
+    # Explicit `return()` is used deliberately for early exits and at the
+    # end of longer functions.
+    return_linter = NULL,
+    # Weight matrices follow mathematical notation (`W_input`, `W_output`).
+    object_name_linter = object_name_linter(
+      styles = c("snake_case", "symbols"),
+      regexes = c(weight_matrix = "^[A-Z][a-z]?(_[a-z0-9]+)*$")
+    )
+  )
+exclusions: list(
+    # testthat helpers (`skip_if_not_installed()` and friends) are not
+    # visible to static analysis inside test files.
+    "tests/testthat" = list(object_usage_linter = Inf),
+    "tests/testthat.R"
+  )
