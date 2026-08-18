@@ -1,7 +1,7 @@
 # srr statistical-standards compliance -- working notes
 
-Status: **tagging complete; 0 test failures; awaiting maintainer review
-before PR.** Last updated: 2026-08-18.
+Status: **tagging complete, zero `@srrstatsTODO` remaining; awaiting
+maintainer review before PR.** Last updated: 2026-08-18.
 
 Process documentation for kindling's srr compliance work
 ([ropensci/software-review#784](https://github.com/ropensci/software-review/issues/784),
@@ -38,28 +38,48 @@ skill's method.
 
 | category | `@srrstats` | `@srrstatsNA` | `@srrstatsTODO` | compliance (excl. NA) |
 |---|---|---|---|---|
-| General (68) | 55 | 12 | 1 | 55/56 = **98%** |
-| ML (90) | 51 | 30 | 9 | 51/60 = **85%** |
+| General (68) | 56 | 12 | 0 | 56/56 = **100%** |
+| ML (90) | 60 | 30 | 0 | 60/60 = **100%** |
 
-Both far above the 50% bar. Verified with `devtools::document()` (srr
-roclet output lists every standard exactly once across the three tag
-kinds; a diff against the generated category lists confirmed no invented
-IDs and no cross-kind duplicates).
+Far above the 50% bar, and with **no TODO tags left**:
+`srr::srr_stats_pre_submit()` passes cleanly, so the package is formally
+submittable. Verified with `devtools::document()` (srr roclet) plus a
+mechanical set-diff of tagged IDs against the generated category lists
+(no invented IDs, no cross-kind duplicates, 158/158 covered).
 
-Remaining `@srrstatsTODO` (substantial development, listed for
-discussion, in `R/srr-stats-standards.R`):
+The ten standards initially parked as TODO were all implemented rather
+than NA'd -- none of them was honestly "not applicable", and an NA on
+merely-unimplemented functionality would not survive review:
 
-- **G5.2b** -- tests for *every* individual message (principal error
-  conditions are tested; exhaustive per-message coverage is not).
-- **ML3.1** -- warm-start/pre-trained model re-use (depends on ML5.2c).
-- **ML4.1, ML4.1a, ML4.1c** -- full optimizer-path retention (parameter
-  snapshots, gradient info); only per-epoch loss (ML4.1b) is retained.
-- **ML5.2b, ML5.2c** -- torch-safe `save`/`load` functions
-  (`saveRDS()` breaks on external pointers) + their documentation. The
-  most user-valuable TODO; flagged by mpadge's assessment as a priority.
-- **ML7.3, ML7.3a, ML7.3b** -- *tests* comparing model-object
-  functionality against other packages' classes (currently documentation
-  only, in `vignette("similar-packages")`).
+- **ML5.2c / ML5.2b** -- new `save_kindling()` / `load_kindling()`
+  (`R/save-load.R`): `saveRDS()` cannot preserve torch external
+  pointers, so the module is serialized via `torch::torch_serialize()`
+  and the rest via R's serializer; round-trip documented and tested.
+  (Pitfall found: reloaded recurrent modules carry stale internal
+  `flat_weights_` tensor caches -> "external pointer is not valid" on
+  forward; fixed by re-applying `$to(device = "cpu")` after load, which
+  rebuilds the caches via `nn_rnn_base$.apply()`.)
+- **ML3.1** -- warm start: `train_nn(initial_model = )` accepts a
+  previously trained or reloaded `nn_fit`, deep-copies its module
+  (serialize/load round-trip) so the source is untouched, inherits its
+  architecture metadata, and validates dimension compatibility.
+- **ML4.1 / ML4.1a / ML4.1c** -- `train_nn(track_optim_path = TRUE)`
+  optionally retains a per-epoch `optim_path` data frame: loss value
+  (ML4.1b), global gradient norm (ML4.1c), and a hash of all model
+  parameters (ML4.1a, the standard's "equivalent hashed
+  representation").
+- **ML7.3 / ML7.3a / ML7.3b** -- `test-srr-model-comparison.R` compares
+  kindling fit objects against `nnet::nnet` fits (recommended package,
+  so the comparison always runs, unlike a brulee/cito Suggests-gated
+  test): shared `predict()` ability, explicit restrictions (no
+  `coef()`/`summary()`), explicit unique abilities (loss history,
+  autoplot, torch-safe save/reload).
+- **G5.2b** -- per-message test coverage, closed mechanically: run
+  `covr::package_coverage(type = "tests")` and list every
+  `cli_abort()`/`cli_warn()`/`cli_inform()`/`stop()` line with zero
+  coverage; each such line is an untested message. Tests were then
+  written for exactly that gap list (`test-srr-messages.R`), calling
+  internal validators directly where the public API cannot reach them.
 
 ## 3. What was implemented (minor changes only, per the agreed rule)
 
@@ -96,6 +116,21 @@ discussion, in `R/srr-stats-standards.R`):
   `KINDLING_EXTENDED_TESTS=true` -- G5.10/G5.6b), plus a
   multi-metric model-comparison test in `test-yardstick-integration.R`
   (ML7.11a). `tests/README.md` documents the extended suite (G5.12).
+
+Second round (closing the last ten standards, see §2): `R/save-load.R`
+(`save_kindling()`/`load_kindling()`), `initial_model` and
+`track_optim_path` arguments on `train_nn()`, `test-srr-save-load.R`,
+`test-srr-model-comparison.R` (nnet added to Suggests),
+`test-srr-messages.R`, and a package-namespace `requireNamespace`
+wrapper in `R/utils.R` so testthat can mock dependency-missing guards
+(base bindings cannot be mocked directly; note it must be a *wrapper*
+calling `base::requireNamespace`, not a copy of it -- copying embeds
+base's `.Internal()` calls in package code and triggers an R CMD check
+WARNING). Two genuine pre-existing
+bugs surfaced and were fixed along the way: `autoplot_diagnostics()`
+compared `length()` of a matrix `actual` against fitted rows, making
+the documented multi-output diagnostics branch unreachable; and the
+existing structure test had to learn the new `optim_path` component.
 
 ## 4. Where we deviated from mpadge's feasibility assessment
 
@@ -162,20 +197,28 @@ being silently tagged compliant.
    `device = "cpu"`, generous tolerances) and cheap; push multi-seed
    variants behind an env-var-gated extended suite (G5.10) documented in
    `tests/README.md` (G5.12).
+7bis. For per-message test coverage (G5.2b), don't audit by hand: run
+   `covr::package_coverage(type = "tests")` and treat every
+   zero-coverage `cli_abort()`/`cli_warn()`/`stop()` line as the exact
+   list of untested messages; write tests for that list, calling
+   internal validators directly (`pkg:::fn`) where the public API
+   cannot reach a branch, and `testthat::local_mocked_bindings()` for
+   guards that depend on absent dependencies.
 8. Finish with `devtools::document()`, the full test suite, and
    `R CMD check`; report failures honestly and fix before review.
 
 ## 7. Verification record
 
-- `devtools::document()`: roclet lists 106 unique `@srrstats`, 42
-  `@srrstatsNA`, 10 `@srrstatsTODO`; set-diff against category lists
-  clean (158/158 covered, no duplicates).
-- `devtools::test()`: **0 failures, 709 passing**, 1 skip (extended
-  suite, off by default), 35 warnings (pre-existing `tput cols` warnings
-  from `table_summary()` in non-terminal sessions -- unrelated).
-- Extended suite run once with `KINDLING_EXTENDED_TESTS=true`: 6/6 pass.
-- `R CMD check --no-manual`: **0 errors, 0 warnings, 0 notes** (5m17s,
-  macOS arm64, R 4.5, torch 0.16.3 with MPS available; correctness tests
-  pin CPU).
-- `srr::srr_stats_pre_submit()` is *expected to flag* the 10 remaining
-  TODOs -- deliberate until the substantial items are discussed.
+- `devtools::document()`: roclet clean; set-diff of tagged IDs vs the
+  category lists: **G 56 `@srrstats` / 12 `@srrstatsNA` / 0 TODO;
+  ML 60 / 30 / 0** -- 158/158, no duplicates, no invented IDs.
+- `srr::srr_stats_pre_submit()`: "All applicable standards have been
+  documented in this package" with **no remaining TODO warning** -- the
+  package is formally submittable.
+- `devtools::test()`: **0 failures, 811 passing**, 1 skip (extended
+  suite, off by default), 35 pre-existing `tput cols` warnings
+  (unrelated). Extended suite passes with
+  `KINDLING_EXTENDED_TESTS=true`.
+- Test coverage 89.2% (`covr`), used mechanically to close G5.2b.
+- `R CMD check --no-manual`: 0 errors, 0 warnings, 0 notes (macOS
+  arm64; correctness tests pin CPU).

@@ -15,3 +15,11 @@ utils::globalVariables(c(
 has_namespace = function(pkg) {
     requireNamespace(pkg, quietly = TRUE)
 }
+
+# Package-namespace wrapper for the base function, so tests can mock
+# dependency-missing guards via testthat::local_mocked_bindings()
+# (base bindings themselves cannot be mocked). A wrapper, not a copy:
+# copying would embed base's .Internal() calls in package code.
+requireNamespace = function(package, ..., quietly = FALSE) {
+    base::requireNamespace(package, ..., quietly = quietly)
+}

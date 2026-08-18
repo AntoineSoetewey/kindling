@@ -146,9 +146,10 @@ autoplot_diagnostics = function(object, actual, ...) {
     }
 
     n_fitted = if (is.matrix(object$fitted)) nrow(object$fitted) else length(object$fitted)
-    if (length(actual) != n_fitted) {
+    n_actual = if (is.matrix(actual)) nrow(actual) else length(actual)
+    if (n_actual != n_fitted) {
         cli::cli_abort(
-            "{.arg actual} has length {length(actual)} but {.field fitted} has length {n_fitted}: they must match."
+            "{.arg actual} has {n_actual} observation{?s} but {.field fitted} has {n_fitted}: they must match."
         )
     }
 

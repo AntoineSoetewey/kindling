@@ -50,6 +50,7 @@ Suggests:
     yardstick,
     mlbench,
     modeldata,
+    nnet,
     vip,
     knitr,
     rmarkdown,

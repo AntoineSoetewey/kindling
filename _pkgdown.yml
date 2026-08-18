@@ -87,6 +87,10 @@ reference:
       - nn_arch
       - early_stop
 
+  - subtitle: Model Persistence
+    contents:
+      - kindling-save-load
+
   - title: Code Generators
     desc: Generate `torch::nn_module()` code (Lowest Level)
 

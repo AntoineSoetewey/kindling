@@ -34,6 +34,8 @@ train_nn(x, ...)
   device = NULL,
   verbose = FALSE,
   cache_weights = FALSE,
+  initial_model = NULL,
+  track_optim_path = FALSE,
   ...
 )
 
@@ -59,6 +61,8 @@ train_nn(x, ...)
   device = NULL,
   verbose = FALSE,
   cache_weights = FALSE,
+  initial_model = NULL,
+  track_optim_path = FALSE,
   ...
 )
 
@@ -84,6 +88,8 @@ train_nn(x, ...)
   device = NULL,
   verbose = FALSE,
   cache_weights = FALSE,
+  initial_model = NULL,
+  track_optim_path = FALSE,
   ...
 )
 
@@ -201,6 +207,22 @@ intervals during training. Default \code{FALSE}.}
 \item{cache_weights}{Logical. If \code{TRUE}, stores a copy of the trained weight
 matrices in the returned object under \verb{$cached_weights}. Default \code{FALSE}.}
 
+\item{initial_model}{A previously trained kindling model of class
+\code{nn_fit} -- from an earlier \code{train_nn()} call or reloaded with
+\code{\link[=load_kindling]{load_kindling()}} -- to warm-start from. Training continues on a deep
+copy of its trained module (the supplied object is left untouched).
+The architecture arguments (\code{hidden_neurons}, \code{activations},
+\code{output_activation}, \code{architecture}) are ignored and inherited from
+the initial model, whose input/output dimensions must match the
+supplied data. Supported by the \code{matrix}, \code{data.frame}, and \code{formula}
+methods. Default \code{NULL} (train from scratch).}
+
+\item{track_optim_path}{Logical. If \code{TRUE}, retain per-epoch information
+on the path taken by the optimizer in the returned object's
+\code{optim_path} component: the loss value, the global gradient norm, and
+a hash of all model parameters at each epoch. Default \code{FALSE} (only
+\code{loss_history} is retained).}
+
 \item{data}{A data frame. Required when \code{x} is a formula.}
 
 \item{flatten_input}{Logical or \code{NULL} (dataset method only). Controls whether
@@ -247,6 +269,9 @@ The returned \code{"nn_fit"} object is a named list with the following component
 actual epochs run (relevant when early stopping is active)
 \item \code{val_loss_history} — per-epoch validation loss, or \code{NULL} if
 \code{validation_split = 0}
+\item \code{optim_path} — when \code{track_optim_path = TRUE}, a data frame with one
+row per epoch (\code{epoch}, \code{loss}, \code{grad_norm}, \code{param_hash}) recording
+the optimizer's path; otherwise \code{NULL}
 \item \code{n_epochs} — number of epochs actually trained
 \item \code{stopped_epoch} — epoch at which early stopping triggered, or \code{NA} if
 training ran to completion
@@ -451,6 +476,24 @@ if (torch::torch_is_installed()) {
         validation_split = 0.2,
         early_stopping = early_stop(patience = 10)
     )
+
+    # Track the optimizer's path, then inspect it
+    model = train_nn(
+        x = Sepal.Length ~ .,
+        data = iris[, 1:4],
+        hidden_neurons = 16,
+        epochs = 20,
+        track_optim_path = TRUE
+    )
+    head(model$optim_path)
+
+    # Warm-start: continue training a previous (or reloaded) model
+    model2 = train_nn(
+        x = Sepal.Length ~ .,
+        data = iris[, 1:4],
+        initial_model = model,
+        epochs = 20
+    )
 }
 }
 
@@ -503,5 +546,6 @@ if (torch::torch_is_installed()) {
 
 }
 \seealso{
-\code{\link[=predict.nn_fit]{predict.nn_fit()}}, \code{\link[=nn_arch]{nn_arch()}}, \code{\link[=act_funs]{act_funs()}}, \code{\link[=early_stop]{early_stop()}}
+\code{\link[=predict.nn_fit]{predict.nn_fit()}}, \code{\link[=nn_arch]{nn_arch()}}, \code{\link[=act_funs]{act_funs()}}, \code{\link[=early_stop]{early_stop()}},
+\code{\link[=save_kindling]{save_kindling()}} / \code{\link[=load_kindling]{load_kindling()}}
 }

@@ -177,35 +177,3 @@ NULL
 #'   tested upstream.
 #' @noRd
 NULL
-
-#' TODO_standards
-#'
-#' Standards not yet addressed: each needs substantial development and is
-#' tracked for discussion with reviewers rather than silently implemented.
-#'
-#' @srrstatsTODO {G5.2b} Exhaustive per-message tests: the principal error
-#'   conditions are tested (see `test-srr-input-checks.R` and existing
-#'   suites), but not yet every individual message emitted by the package.
-#' @srrstatsTODO {ML3.1} Re-use of pre-trained model objects (warm-start
-#'   submission of a previously trained model) is not yet supported;
-#'   depends on the save/load work under ML5.2c.
-#' @srrstatsTODO {ML4.1} Optional retention of full optimizer paths is
-#'   currently limited to per-epoch loss values (ML4.1b): parameter
-#'   snapshots and gradient information are not yet retained.
-#' @srrstatsTODO {ML4.1a} Per-step model-internal parameter retention not
-#'   yet implemented (see ML4.1).
-#' @srrstatsTODO {ML4.1c} Gradient/advance information retention not yet
-#'   implemented (see ML4.1).
-#' @srrstatsTODO {ML5.2b} Documentation of saving/re-loading trained
-#'   models awaits the dedicated save/load functions (ML5.2c).
-#' @srrstatsTODO {ML5.2c} `saveRDS()` is not appropriate for torch-backed
-#'   fits (external pointers); dedicated `save`/`load` functions wrapping
-#'   `torch::torch_save()`/`torch_load()` are planned.
-#' @srrstatsTODO {ML7.3} Tests explicitly comparing kindling model-object
-#'   functionality against equivalent classes from other ML packages are
-#'   not yet implemented (the comparison currently lives in
-#'   `vignette("similar-packages")` as documentation, not tests).
-#' @srrstatsTODO {ML7.3a} See ML7.3.
-#' @srrstatsTODO {ML7.3b} See ML7.3.
-#' @noRd
-NULL

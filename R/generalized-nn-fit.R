@@ -78,6 +78,20 @@
 #'   intervals during training. Default `FALSE`.
 #' @param cache_weights Logical. If `TRUE`, stores a copy of the trained weight
 #'   matrices in the returned object under `$cached_weights`. Default `FALSE`.
+#' @param initial_model A previously trained kindling model of class
+#'   `nn_fit` -- from an earlier `train_nn()` call or reloaded with
+#'   [load_kindling()] -- to warm-start from. Training continues on a deep
+#'   copy of its trained module (the supplied object is left untouched).
+#'   The architecture arguments (`hidden_neurons`, `activations`,
+#'   `output_activation`, `architecture`) are ignored and inherited from
+#'   the initial model, whose input/output dimensions must match the
+#'   supplied data. Supported by the `matrix`, `data.frame`, and `formula`
+#'   methods. Default `NULL` (train from scratch).
+#' @param track_optim_path Logical. If `TRUE`, retain per-epoch information
+#'   on the path taken by the optimizer in the returned object's
+#'   `optim_path` component: the loss value, the global gradient norm, and
+#'   a hash of all model parameters at each epoch. Default `FALSE` (only
+#'   `loss_history` is retained).
 #' @param ... Additional arguments passed to specific methods.
 #'
 #' @return An object of class `"nn_fit"`, or one of its subclasses:
@@ -96,6 +110,9 @@
 #'   actual epochs run (relevant when early stopping is active)
 #' - `val_loss_history` — per-epoch validation loss, or `NULL` if
 #'   `validation_split = 0`
+#' - `optim_path` — when `track_optim_path = TRUE`, a data frame with one
+#'   row per epoch (`epoch`, `loss`, `grad_norm`, `param_hash`) recording
+#'   the optimizer's path; otherwise `NULL`
 #' - `n_epochs` — number of epochs actually trained
 #' - `stopped_epoch` — epoch at which early stopping triggered, or `NA` if
 #'   training ran to completion
@@ -209,6 +226,24 @@
 #'         validation_split = 0.2,
 #'         early_stopping = early_stop(patience = 10)
 #'     )
+#'
+#'     # Track the optimizer's path, then inspect it
+#'     model = train_nn(
+#'         x = Sepal.Length ~ .,
+#'         data = iris[, 1:4],
+#'         hidden_neurons = 16,
+#'         epochs = 20,
+#'         track_optim_path = TRUE
+#'     )
+#'     head(model$optim_path)
+#'
+#'     # Warm-start: continue training a previous (or reloaded) model
+#'     model2 = train_nn(
+#'         x = Sepal.Length ~ .,
+#'         data = iris[, 1:4],
+#'         initial_model = model,
+#'         epochs = 20
+#'     )
 #' }
 #' }
 #'
@@ -292,8 +327,17 @@
 #'   is explicitly defined rather than presumed understood.
 #' @srrstats {ML4.4} Guidance on trade-offs between batch sizes and numbers
 #'   of epochs is given in the dedicated section above.
+#' @srrstats {ML3.1} Both untrained models (parameter-specified) and
+#'   pre-trained models are supported: `initial_model` accepts a
+#'   previously trained (or `load_kindling()`-reloaded) `nn_fit` object
+#'   and continues training from it.
+#' @srrstats {ML4.2} Extraction of the retained optimizer-path information
+#'   is documented in the Details section (`optim_path`, `loss_history`)
+#'   and demonstrated in the examples (`head(model$optim_path)`,
+#'   `ggplot2::autoplot()`).
 #'
-#' @seealso [predict.nn_fit()], [nn_arch()], [act_funs()], [early_stop()]
+#' @seealso [predict.nn_fit()], [nn_arch()], [act_funs()], [early_stop()],
+#'   [save_kindling()] / [load_kindling()]
 #' @name gen-nn-train
 #' @export
 train_nn = function(x, ...) {
@@ -362,6 +406,8 @@ train_nn.matrix =
         device = NULL,
         verbose = FALSE,
         cache_weights = FALSE,
+        initial_model = NULL,
+        track_optim_path = FALSE,
         ...
     ) {
         arch = .resolve_train_architecture(architecture = architecture, arch = arch)
@@ -391,6 +437,8 @@ train_nn.matrix =
             device = device,
             verbose = verbose,
             cache_weights = cache_weights,
+            initial_model = initial_model,
+            track_optim_path = track_optim_path,
             fit_class = "nn_fit"
         )
     }
@@ -427,6 +475,8 @@ train_nn.data.frame =
         device = NULL,
         verbose = FALSE,
         cache_weights = FALSE,
+        initial_model = NULL,
+        track_optim_path = FALSE,
         ...
     ) {
         arch = .resolve_train_architecture(architecture = architecture, arch = arch)
@@ -457,7 +507,9 @@ train_nn.data.frame =
             validation_split = validation_split,
             device = device,
             verbose = verbose,
-            cache_weights = cache_weights
+            cache_weights = cache_weights,
+            initial_model = initial_model,
+            track_optim_path = track_optim_path
         )
     }
 
@@ -492,6 +544,8 @@ train_nn.formula =
         device = NULL,
         verbose = FALSE,
         cache_weights = FALSE,
+        initial_model = NULL,
+        track_optim_path = FALSE,
         ...
     ) {
         arch = .resolve_train_architecture(architecture = architecture, arch = arch)
@@ -526,7 +580,9 @@ train_nn.formula =
             validation_split = validation_split,
             device = device,
             verbose = verbose,
-            cache_weights = cache_weights
+            cache_weights = cache_weights,
+            initial_model = initial_model,
+            track_optim_path = track_optim_path
         )
     }
 
@@ -564,7 +620,9 @@ train_nn.default = function(x, ...) {
         validation_split,
         device,
         verbose,
-        cache_weights
+        cache_weights,
+        initial_model = NULL,
+        track_optim_path = FALSE
     ) {
         predictors = processed$predictors
         outcomes = processed$outcomes
@@ -598,6 +656,8 @@ train_nn.default = function(x, ...) {
             device = device,
             verbose = verbose,
             cache_weights = cache_weights,
+            initial_model = initial_model,
+            track_optim_path = track_optim_path,
             fit_class = "nn_fit_tab"
         )
 
@@ -631,9 +691,19 @@ train_nn.default = function(x, ...) {
 #' @srrstats {G2.10} Column extraction never relies on default drop
 #'   behaviour: all row subsetting uses `drop = FALSE`, and single-column
 #'   outcomes are extracted explicitly (`[[1L]]`) in `.train_nn_tab_impl()`.
+#' @srrstats {ML4.1} `track_optim_path = TRUE` optionally retains
+#'   per-epoch information on the optimizer's path, minimally including
+#'   the three components named by the standard (see ML4.1a-c).
+#' @srrstats {ML4.1a} A hashed representation of all model-internal
+#'   parameters is recorded at each epoch (`optim_path$param_hash`),
+#'   the "equivalent hashed representation" the standard allows.
 #' @srrstats {ML4.1b} The per-epoch value of the loss function (and
 #'   validation loss when a validation split is used) is retained in
-#'   `loss_history` / `val_loss_history` on the returned object.
+#'   `loss_history` / `val_loss_history` on the returned object, and in
+#'   `optim_path$loss` when path tracking is enabled.
+#' @srrstats {ML4.1c} The information used to advance is quantified by
+#'   the global gradient norm recorded at each epoch
+#'   (`optim_path$grad_norm`).
 #' @srrstats {ML5.0} Training returns a single model object (class
 #'   `nn_fit`) containing the trained torch module plus all metadata.
 #' @srrstats {ML5.0a} The returned object has its own class (`nn_fit`, with
@@ -675,6 +745,8 @@ train_nn_impl =
         device = NULL,
         verbose = FALSE,
         cache_weights = FALSE,
+        initial_model = NULL,
+        track_optim_path = FALSE,
         fit_class = "nn_fit"
     ) {
         if (!requireNamespace("torch", quietly = TRUE)) {
@@ -691,6 +763,21 @@ train_nn_impl =
         if (!is.matrix(x)) x = as.matrix(x)
         check_predictor_matrix(x)
         check_outcome(y, nrow(x))
+        check_flag(track_optim_path, "track_optim_path")
+
+        # ---- Warm start: inherit architecture from the initial model ----
+        if (!is.null(initial_model)) {
+            if (!inherits(initial_model, "nn_fit") || is.null(initial_model$model)) {
+                cli::cli_abort(
+                    "{.arg initial_model} must be a trained {.cls nn_fit} object (from {.fn train_nn} or {.fn load_kindling}).",
+                    class = "kindling_input_error"
+                )
+            }
+            hidden_neurons = initial_model$hidden_neurons %||% integer(0)
+            activations = initial_model$activations
+            output_activation = initial_model$output_activation
+            arch = initial_model$arch
+        }
 
         # ---- Device ----
         device = if (is.null(device)) get_default_device() else validate_device(device)
@@ -753,6 +840,15 @@ train_nn_impl =
         }
 
         # ---- Build model ----
+        if (!is.null(initial_model)) {
+            if (initial_model$no_x != no_x || initial_model$no_y != no_y) {
+                cli::cli_abort(
+                    "{.arg initial_model} was trained for {initial_model$no_x} predictors / {initial_model$no_y} outputs, but the supplied data has {no_x} / {no_y}.",
+                    class = "kindling_input_error"
+                )
+            }
+        }
+
         arch_args = if (!is.null(arch)) {
             args = unclass(arch)
             args$input_transform = NULL
@@ -794,7 +890,12 @@ train_nn_impl =
             .env = arch_env
         )
 
-        model = rlang::eval_tidy(model_expr)()
+        model = if (!is.null(initial_model)) {
+            # deep copy so the supplied model is left untouched
+            .clone_nn_module(initial_model$model)
+        } else {
+            rlang::eval_tidy(model_expr)()
+        }
         model$to(device = device)
 
         # ---- Early stopping state ----
@@ -891,6 +992,8 @@ train_nn_impl =
         # ---- Training loop ----
         loss_history = numeric(epochs)
         val_loss_history = if (!is.null(x_val)) numeric(epochs) else NULL
+        opt_grad_norm = if (track_optim_path) numeric(epochs) else NULL
+        opt_param_hash = if (track_optim_path) character(epochs) else NULL
         n_batches = ceiling(nrow(x_train) / batch_size)
 
         for (epoch in seq_len(epochs)) {
@@ -918,6 +1021,21 @@ train_nn_impl =
             }
 
             loss_history[epoch] = epoch_loss / n_batches
+
+            # ---- Optimizer-path tracking ----
+            if (track_optim_path) {
+                g2 = 0
+                for (p in model$parameters) {
+                    g = p$grad
+                    if (!is.null(g) && g$numel() > 0) {
+                        g2 = g2 + sum(as.numeric(g$cpu())^2)
+                    }
+                }
+                opt_grad_norm[epoch] = sqrt(g2)
+                opt_param_hash[epoch] = rlang::hash(
+                    lapply(model$parameters, function(p) as.numeric(p$cpu()))
+                )
+            }
 
             # ---- Validation ----
             if (!is.null(x_val)) {
@@ -1003,6 +1121,17 @@ train_nn_impl =
         } else {
             NA_integer_
         }
+        optim_path = if (track_optim_path) {
+            data.frame(
+                epoch = seq_len(actual_epochs),
+                loss = loss_history,
+                grad_norm = opt_grad_norm[seq_len(actual_epochs)],
+                param_hash = opt_param_hash[seq_len(actual_epochs)],
+                stringsAsFactors = FALSE
+            )
+        } else {
+            NULL
+        }
 
         # ---- Fitted values ----
         model$eval()
@@ -1047,6 +1176,7 @@ train_nn_impl =
                 fitted = fitted_values,
                 loss_history = loss_history,
                 val_loss_history = val_loss_history,
+                optim_path = optim_path,
                 n_epochs = actual_epochs,
                 stopped_epoch = stopped_epoch,
                 hidden_neurons = hidden_neurons,
