@@ -1,3 +1,7 @@
+#' @srrstats {ML7.7} Different optimization algorithms (adam, sgd, and
+#'   optimizer-specific arguments) are explicitly tested here and in
+#'   test-srr-correctness.R.
+
 skip_if_no_torch = function() {
     skip_if_not_installed("torch")
     skip_if_not(torch::torch_is_installed(), "Torch backend not available")

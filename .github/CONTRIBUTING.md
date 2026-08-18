@@ -45,3 +45,7 @@ See our guide on [how to create a great issue](https://code-review.tidyverse.org
 Please note that the kindling project is released with a
 [Contributor Code of Conduct](CODE_OF_CONDUCT.md). By contributing to this
 project you agree to abide by its terms.
+
+## Life cycle statement
+
+kindling is in an **active** development state ([repostatus: Active](https://www.repostatus.org/#active)): it has reached a stable, usable state on CRAN and is actively developed. The public API (code generation, `ffnn()`/`rnn()`/`train_nn()`, and the parsnip engines) is considered stable; experimental or superseded features are flagged with [lifecycle](https://lifecycle.r-lib.org/) badges in their documentation (e.g. `train_nn()` is experimental, `args()` is superseded). Anticipated future development includes additional architectures, save/load helpers for trained models, and continued tidymodels integration. Breaking changes will follow the lifecycle process, with deprecation warnings before removal.

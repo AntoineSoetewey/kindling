@@ -1,3 +1,6 @@
+#' @srrstats {ML5.0b} The print-method summaries of trained model objects
+#'   are snapshot-tested here.
+
 skip_if_no_torch = function() {
     skip_if_not_installed("torch")
     skip_if_not(torch::torch_is_installed(), "Torch backend not available")

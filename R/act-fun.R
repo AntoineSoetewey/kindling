@@ -25,6 +25,11 @@
 #' @importFrom cli cli_abort
 #' @importFrom vctrs new_vctr
 #'
+#' @srrstats {G2.3a} Activation names are validated against the `nnf_*`
+#'   functions exported by torch (`validate_activation()`), and activation
+#'   parameters against the target function's formals
+#'   (`validate_args_formals()`); invalid values error informatively with
+#'   typed condition classes.
 #' @export
 act_funs = function(...) {
     dots = enquos(..., .ignore_empty = "all")

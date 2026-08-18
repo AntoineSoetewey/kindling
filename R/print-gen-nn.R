@@ -5,6 +5,9 @@
 #'
 #' @return No return value, called for side effects (printing model summary)
 #'
+#' @srrstats {ML5.0b} The `nn_fit` print method summarises the trained
+#'   model: architecture type, epochs run, layer sizes, task type, input
+#'   and output dimensions, regularization settings, and device.
 #' @keywords internal
 #' @export
 print.nn_fit = function(x, ...) {

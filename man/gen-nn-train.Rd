@@ -277,6 +277,53 @@ dataset or via \code{input_transform}.
 }
 }
 
+\section{Training, validation, and test data}{
+
+\code{train_nn()} always treats the data it receives as \strong{training} data.
+A \strong{validation} subset can be carved out of it with \code{validation_split}
+(used only to monitor \code{val_loss_history} and to drive \code{\link[=early_stop]{early_stop()}});
+\strong{test} data is never seen during training and should be supplied
+post-hoc to \code{\link[=predict.nn_fit]{predict.nn_fit()}}, or managed by resampling tools such as
+\code{rsample::initial_split()} in the tidymodels workflow demonstrated in
+\code{vignette("kindling")}. This proportion-based design (rather than
+labelled train/test inputs) follows tidymodels conventions, where data
+partitioning is the responsibility of \code{rsample}/\code{tune}.
+
+Outcomes supplied as \code{ordered} factors are treated as plain, unordered
+class labels: the ordering is ignored and the factor levels are used as
+categories.
+}
+
+\section{Missing values}{
+
+kindling models cannot be trained on missing (\code{NA}) or non-finite
+(\code{NaN}, \code{Inf}) values: torch tensors have no notion of R's \code{NA}, so all
+inputs are checked up front and an informative error is raised instead
+of propagating undefined values. Imputation is deliberately delegated to
+the pre-processing layer of the modelling workflow, e.g.
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{recipes::recipe(y ~ ., data = dat) |>
+    recipes::step_impute_mean(recipes::all_numeric_predictors())
+}\if{html}{\out{</div>}}
+
+or drop incomplete rows with \code{tidyr::drop_na()} before fitting.
+}
+
+\section{Learning rate, batch size, and epochs}{
+
+The default \code{learn_rate = 0.001} is a common starting point for the
+default \code{"adam"} optimizer but is not universally valid: too high a rate
+can make the loss diverge, too low a rate slows convergence. Adaptive
+optimizers (\code{"adam"}, \code{"rmsprop"}) adjust per-parameter step sizes
+automatically, which is kindling's mechanism for automatic training-rate
+adaptation; inspect \code{loss_history} (e.g. via \code{ggplot2::autoplot()}) to
+diagnose a poorly chosen rate. Smaller \code{batch_size} values give noisier
+but more frequent parameter updates per epoch; larger values give
+smoother gradients but fewer updates, typically requiring more \code{epochs}.
+One \emph{epoch} is one full pass over the training data; each epoch performs
+\code{ceiling(n / batch_size)} gradient updates.
+}
+
 \section{Matrix method}{
 
 When \code{x} is supplied as a raw numeric matrix, no preprocessing is applied.

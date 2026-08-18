@@ -1,3 +1,7 @@
+#' @srrstats {ML7.8} Different loss functions are explicitly tested:
+#'   built-in ("mse", "mae"), custom functions/lambdas, and invalid
+#'   specifications (see also test-basemodel.R for classification losses).
+
 skip_if_no_torch = function() {
     skip_if_not_installed("torch")
     skip_if_not(torch::torch_is_installed(), "Torch backend not available")

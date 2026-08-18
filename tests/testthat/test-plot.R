@@ -1,3 +1,6 @@
+#' @srrstats {ML4.2} Extraction and visualisation of the retained
+#'   loss history (autoplot/plot on nn_fit) is tested here.
+
 skip_if_no_torch = function() {
     skip_if_not_installed("torch")
     skip_if_not(torch::torch_is_installed(), "Torch backend not available")

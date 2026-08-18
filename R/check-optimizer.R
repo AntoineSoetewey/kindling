@@ -5,6 +5,9 @@
 #' @importFrom cli cli_abort
 #' @importFrom rlang is_installed
 #'
+#' @srrstats {G2.3a} Optimizer names are validated against the set of
+#'   `optim_*` constructors actually exported by torch, with an informative
+#'   error for unknown values (callers lowercase the input first, G2.3b).
 #' @noRd
 validate_optimizer = function(optimizer) {
     if (!is_installed("torch")) {

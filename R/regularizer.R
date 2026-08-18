@@ -6,6 +6,12 @@
 #' @param mixture Numeric. Elastic net mixing parameter
 #'
 #' @return Torch tensor with regularization loss
+#'
+#' @srrstats {G3.0} The only floating-point equality comparisons in the
+#'   package (`penalty == 0`, `mixture == 0`, `mixture == 1` here and in
+#'   `print` methods) test user-supplied sentinel constants against their
+#'   exact default values, never computed quantities; all numeric testing
+#'   of computed results uses tolerance-based `expect_equal()`.
 #' @noRd
 regularizer = function(model, penalty, mixture = 0.5) {
     # Default: When regularization wasn't applied

@@ -122,6 +122,17 @@
 #' Goodfellow I, Bengio Y, Courville A (2016). _Deep Learning_. MIT Press.
 #' \url{https://www.deeplearningbook.org/}.
 #'
+#' @srrstats {G1.0} Primary references (Goodfellow, Bengio & Courville
+#'   2016 for the methods; Falbel & Luraschi for the torch backend) are
+#'   listed below and in the README.
+#' @srrstats {G1.4} All exported functions are documented with roxygen2.
+#' @srrstats {G1.4a} Internal functions are documented with roxygen2 plus
+#'   `@noRd` or `@keywords internal` throughout the package.
+#' @srrstats {ML6.0} The package description and the "Training, validation,
+#'   and test data" section of `?train_nn` reference the workflow
+#'   separating training from testing stages, with test data handled via
+#'   `predict()`/`rsample`.
+#'
 #' @section License:
 #' MIT + file LICENSE
 #'

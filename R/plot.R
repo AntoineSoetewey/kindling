@@ -20,6 +20,10 @@
 #'   }
 #' }
 #'
+#' @srrstats {ML4.2} Extraction and inspection of the retained optimizer
+#'   path (per-epoch loss and validation loss) is documented here and in
+#'   the examples: `autoplot()` visualises `loss_history` /
+#'   `val_loss_history`, which are also directly accessible on the fit.
 #' @keywords internal
 #' @export
 #' @method autoplot nn_fit

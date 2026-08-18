@@ -105,6 +105,8 @@
 #' }
 #' }
 #'
+#' @srrstats {ML3.0a} This function returns an unfitted parsnip model
+#'   specification; fitting happens only via `parsnip::fit()`.
 #' @export
 mlp_kindling =
     function(

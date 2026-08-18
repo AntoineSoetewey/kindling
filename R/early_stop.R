@@ -10,6 +10,9 @@
 #'
 #' @return An object of class `"early_stop_spec"`.
 #'
+#' @srrstats {G2.3a} `monitor` is restricted to its documented values via
+#'   `rlang::arg_match()`; `patience` and `min_delta` are range-checked.
+#'
 #' @examples
 #' early_stop(patience = 10L, min_delta = 1e-3, monitor = "train_loss")
 #'

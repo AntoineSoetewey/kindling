@@ -212,6 +212,87 @@
 #' }
 #' }
 #'
+#' @section Training, validation, and test data:
+#' `train_nn()` always treats the data it receives as **training** data.
+#' A **validation** subset can be carved out of it with `validation_split`
+#' (used only to monitor `val_loss_history` and to drive [early_stop()]);
+#' **test** data is never seen during training and should be supplied
+#' post-hoc to [predict.nn_fit()], or managed by resampling tools such as
+#' `rsample::initial_split()` in the tidymodels workflow demonstrated in
+#' `vignette("kindling")`. This proportion-based design (rather than
+#' labelled train/test inputs) follows tidymodels conventions, where data
+#' partitioning is the responsibility of `rsample`/`tune`.
+#'
+#' Outcomes supplied as `ordered` factors are treated as plain, unordered
+#' class labels: the ordering is ignored and the factor levels are used as
+#' categories.
+#'
+#' @section Missing values:
+#' kindling models cannot be trained on missing (`NA`) or non-finite
+#' (`NaN`, `Inf`) values: torch tensors have no notion of R's `NA`, so all
+#' inputs are checked up front and an informative error is raised instead
+#' of propagating undefined values. Imputation is deliberately delegated to
+#' the pre-processing layer of the modelling workflow, e.g.
+#'
+#' ``` r
+#' recipes::recipe(y ~ ., data = dat) |>
+#'     recipes::step_impute_mean(recipes::all_numeric_predictors())
+#' ```
+#'
+#' or drop incomplete rows with `tidyr::drop_na()` before fitting.
+#'
+#' @section Learning rate, batch size, and epochs:
+#' The default `learn_rate = 0.001` is a common starting point for the
+#' default `"adam"` optimizer but is not universally valid: too high a rate
+#' can make the loss diverge, too low a rate slows convergence. Adaptive
+#' optimizers (`"adam"`, `"rmsprop"`) adjust per-parameter step sizes
+#' automatically, which is kindling's mechanism for automatic training-rate
+#' adaptation; inspect `loss_history` (e.g. via `ggplot2::autoplot()`) to
+#' diagnose a poorly chosen rate. Smaller `batch_size` values give noisier
+#' but more frequent parameter updates per epoch; larger values give
+#' smoother gradients but fewer updates, typically requiring more `epochs`.
+#' One *epoch* is one full pass over the training data; each epoch performs
+#' `ceiling(n / batch_size)` gradient updates.
+#'
+#' @srrstats {G1.3} Statistical terminology (epoch, batch, learning rate,
+#'   loss, validation split, early stopping) is defined in the parameter
+#'   documentation and the dedicated sections above.
+#' @srrstats {G2.0a} Length expectations (single values, vectors per hidden
+#'   layer) are documented for every parameter above.
+#' @srrstats {G2.1a} Data types of all inputs are documented for every
+#'   parameter above.
+#' @srrstats {G2.3} Univariate character inputs are restricted to
+#'   documented sets of values (see `optimizer`, `loss`, `device`).
+#' @srrstats {G2.5} The treatment of `ordered` factors (ordering ignored)
+#'   is documented in the section on training data above.
+#' @srrstats {G2.7} `train_nn()` accepts the standard tabular forms:
+#'   `matrix`, `data.frame` (including tibbles, via `hardhat::mold()`),
+#'   formula + data, and domain-specific torch `dataset` objects.
+#' @srrstats {G2.8} All tabular methods funnel through a single
+#'   pre-processing bridge that hands a numeric matrix to the shared
+#'   implementation core, so sub-functions receive one defined input class.
+#' @srrstats {ML1.0} The documentation above makes the conceptual
+#'   distinction between training, validation, and test data explicit.
+#' @srrstats {ML1.0a} The same section explains and justifies the
+#'   proportion-based `validation_split` design in place of labelled
+#'   train/test inputs (tidymodels conventions).
+#' @srrstats {ML1.6a} The "Missing values" section explains *why* missing
+#'   values are not admitted (torch tensors cannot represent `NA`).
+#' @srrstats {ML1.6b} The same section gives explicit example code for
+#'   imputing (rather than discarding) missing values via recipes.
+#' @srrstats {ML3.4} The importance of, and sensitivity to, training-rate
+#'   values is documented in the dedicated section above.
+#' @srrstats {ML3.4a} Automatic training-rate adaptation is provided
+#'   through the adaptive optimizers (`adam`, `rmsprop`), as documented
+#'   above; a separate rate-finder pre-processing stage is deliberately not
+#'   implemented.
+#' @srrstats {ML3.4b} Restrictions on the validity of the default
+#'   `learn_rate` are documented, with guidance to diagnose bad values.
+#' @srrstats {ML4.3} Batch-processing terminology (`epochs`, `batch_size`)
+#'   is explicitly defined rather than presumed understood.
+#' @srrstats {ML4.4} Guidance on trade-offs between batch sizes and numbers
+#'   of epochs is given in the dedicated section above.
+#'
 #' @seealso [predict.nn_fit()], [nn_arch()], [act_funs()], [early_stop()]
 #' @name gen-nn-train
 #' @export
@@ -528,6 +609,49 @@ train_nn.default = function(x, ...) {
 
 
 #' Shared core implementation
+#'
+#' @srrstats {G2.4} Explicit type conversions are applied at the y-encoding
+#'   step below: `as.integer()` for factor outcomes (G2.4a), `as.numeric()`
+#'   for continuous outcomes (G2.4b), `as.factor()` for character outcomes
+#'   (G2.4d), and `factor(..., levels, labels)` to convert predictions back
+#'   from integer codes (G2.4e).
+#' @srrstats {G2.4a} Factor outcomes are encoded via explicit `as.integer()`.
+#' @srrstats {G2.4b} Continuous outcomes pass through explicit `as.numeric()`.
+#' @srrstats {G2.4c} Character conversion is not silently applied to data;
+#'   the only character-relevant path (character outcome) goes through
+#'   `as.factor()` with a diagnostic message.
+#' @srrstats {G2.4d} Character outcomes are converted with explicit
+#'   `as.factor()`, with a diagnostic message (see G2.9).
+#' @srrstats {G2.4e} Predictions are converted from factor codes via
+#'   `factor(as.integer(.), levels, labels)` using the levels recorded at
+#'   training time.
+#' @srrstats {G2.9} Diagnostic messages are issued for information-adding or
+#'   information-losing conversions: auto-generated predictor names when
+#'   `x` has no column names, and character-to-factor outcome conversion.
+#' @srrstats {G2.10} Column extraction never relies on default drop
+#'   behaviour: all row subsetting uses `drop = FALSE`, and single-column
+#'   outcomes are extracted explicitly (`[[1L]]`) in `.train_nn_tab_impl()`.
+#' @srrstats {ML4.1b} The per-epoch value of the loss function (and
+#'   validation loss when a validation split is used) is retained in
+#'   `loss_history` / `val_loss_history` on the returned object.
+#' @srrstats {ML5.0} Training returns a single model object (class
+#'   `nn_fit`) containing the trained torch module plus all metadata.
+#' @srrstats {ML5.0a} The returned object has its own class (`nn_fit`, with
+#'   subclasses `nn_fit_tab` / `nn_fit_ds`).
+#' @srrstats {ML3.5} Optimization is controlled by explicit parameters for
+#'   both the search algorithm and the loss function.
+#' @srrstats {ML3.5a} `optimizer` selects the search algorithm; any
+#'   `torch::optim_*()` constructor is accepted, with extra arguments via
+#'   `optimizer_args`.
+#' @srrstats {ML3.5b} `loss` selects the loss function used to assess
+#'   distance between estimates and targets.
+#' @srrstats {ML3.6} Multiple search algorithms and loss functions are
+#'   permitted, not a single hard-coded pair.
+#' @srrstats {ML3.6a} Multiple optimizers: `"adam"`, `"sgd"`, `"rmsprop"`,
+#'   and any other `torch::optim_*()` implementation by name.
+#' @srrstats {ML3.6b} Multiple losses: `"mse"`, `"mae"`, `"cross_entropy"`,
+#'   `"bce"`, plus arbitrary user-supplied loss functions or lambdas
+#'   (validated by `.validate_loss_fn()`).
 #' @keywords internal
 train_nn_impl =
     function(
@@ -561,11 +685,16 @@ train_nn_impl =
             hidden_neurons = integer(0L)
         }
 
+        # ---- Input assertions ----
+        check_training_args(epochs, batch_size, learn_rate, validation_split, verbose, cache_weights)
+        validate_regularization(penalty, mixture)
+        if (!is.matrix(x)) x = as.matrix(x)
+        check_predictor_matrix(x)
+        check_outcome(y, nrow(x))
+
         # ---- Device ----
         device = if (is.null(device)) get_default_device() else validate_device(device)
         if (verbose) cli::cli_alert_info("Using device: {device}")
-
-        validate_regularization(penalty, mixture)
 
         # ---- Input transform ----
         input_fn = if (!is.null(arch) && !is.null(arch$input_transform)) {
@@ -575,13 +704,23 @@ train_nn_impl =
         }
 
         # ---- Metadata ----
+        if (is.null(colnames(x))) {
+            cli::cli_inform(
+                "{.arg x} has no column names: using generated names {.val V1}..{.val V{ncol(x)}}."
+            )
+        }
         feature_names = colnames(x) %||% paste0("V", seq_len(ncol(x)))
         response_name = names(y)[1L] %||% "y"
         is_classification = is.factor(y) || is.character(y)
 
         # ---- y encoding ----
         if (is_classification) {
-            if (is.character(y)) y = as.factor(y)
+            if (is.character(y)) {
+                cli::cli_inform(
+                    "Character outcome {.arg y} converted to factor with alphabetical level ordering."
+                )
+                y = as.factor(y)
+            }
             y_levels = levels(y)
             n_classes = length(y_levels)
             y_numeric = as.integer(y)
@@ -1006,6 +1145,7 @@ predict.nn_fit =
         }
 
         if (!is.matrix(newdata)) newdata = as.matrix(newdata)
+        check_newdata_matrix(newdata)
 
         x_new_t = input_fn(torch::torch_tensor(newdata, dtype = torch::torch_float32(), device = device))
         object$model$eval()
