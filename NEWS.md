@@ -58,6 +58,13 @@
 
 -  Wrap `!requireNamespace(pkg, quietly = TRUE)` as this causes hidden bugs to `has_namespace()`
 
+-   `autoplot_diagnostics()` errored on multi-output regression models
+    instead of returning one actual-vs-fitted panel per output column.
+    The length check comparing `actual` against the fitted values used
+    `length()` on a matrix (always 2, the element count) instead of
+    `nrow()` (the observation count), so the mismatch check always
+    failed before reaching the multi-output branch.
+
 # kindling 0.3.2
 
 ## Bug fixes
