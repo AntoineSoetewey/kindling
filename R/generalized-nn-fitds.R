@@ -272,6 +272,9 @@ train_nn_impl_dataset =
         hidden_neurons = integer(0L)
     }
 
+    check_training_args(epochs, batch_size, learn_rate, validation_split, verbose, cache_weights)
+    validate_regularization(penalty, mixture)
+
     # ---- Device ----
     if (is.null(device)) {
         device = get_default_device()
@@ -280,13 +283,6 @@ train_nn_impl_dataset =
     }
 
     if (verbose) cli::cli_alert_info("Using device: {device}")
-
-    validate_regularization(penalty, mixture)
-
-    if (!is.numeric(validation_split) || length(validation_split) != 1L || is.na(validation_split) ||
-        validation_split < 0 || validation_split >= 1) {
-        cli::cli_abort("{.arg validation_split} must be a single number in [0, 1).")
-    }
 
     # ---- Input transform ----
     input_fn = if (!is.null(arch) && !is.null(arch$input_transform)) {

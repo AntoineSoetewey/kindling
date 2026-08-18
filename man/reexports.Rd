@@ -12,6 +12,6 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
-  \item{NeuralNetTools}{\code{\link[NeuralNetTools]{garson}}, \code{\link[NeuralNetTools]{olden}}}
+  \item{NeuralNetTools}{\code{\link[NeuralNetTools:garson]{garson()}}, \code{\link[NeuralNetTools:olden]{olden()}}}
 }}
 

@@ -144,6 +144,11 @@ tune_res = tune_grid(
 )
 ```
 
+`metric_set()` is not limited to built-in metrics: it also accepts custom
+metrics created with `yardstick::new_numeric_metric()` (see
+`vignette("custom-metrics", package = "yardstick")`), so kindling models can
+be tuned and assessed against user-defined criteria as well.
+
 ### Inspect
 
 Even with the list-columns, it still normally produces the output we want to produce. Use functions to extract the metrics output after grid search, e.g. `collect_metrics()` and `show_best()`. 

@@ -176,8 +176,12 @@ rnn_impl =
         cli::cli_alert_info("Using device: {device}")
     }
     
+    check_training_args(epochs, batch_size, learn_rate, validation_split, verbose, cache_weights)
     validate_regularization(penalty, mixture)
-    
+    if (!is.matrix(x)) x = as.matrix(x)
+    check_predictor_matrix(x)
+    check_outcome(y, nrow(x))
+
     feature_names = colnames(x)
     if (is.null(feature_names)) {
         feature_names = paste0("V", seq_len(ncol(x)))

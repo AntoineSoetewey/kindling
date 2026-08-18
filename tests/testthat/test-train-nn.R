@@ -1,3 +1,7 @@
+#' @srrstats {ML7.8} Different loss functions are explicitly tested:
+#'   built-in ("mse", "mae"), custom functions/lambdas, and invalid
+#'   specifications (see also test-basemodel.R for classification losses).
+
 skip_if_no_torch = function() {
     skip_if_not_installed("torch")
     skip_if_not(torch::torch_is_installed(), "Torch backend not available")
@@ -49,7 +53,7 @@ test_that("train_nn() return object has correct structure", {
     skip_if_no_torch()
     m = train_nn(iris_x, iris_y, epochs = 10, validation_split = 0.2)
     expect_named(m, c(
-        "model", "fitted", "loss_history", "val_loss_history",
+        "model", "fitted", "loss_history", "val_loss_history", "optim_path",
         "n_epochs", "stopped_epoch", "hidden_neurons", "activations",
         "output_activation", "penalty", "mixture", "feature_names",
         "response_name", "no_x", "no_y", "is_classification",

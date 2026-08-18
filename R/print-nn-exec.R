@@ -75,6 +75,9 @@ ordinal_gen = function(x) {
 #'
 #' @return No return value, called for side effects (printing model summary)
 #'
+#' @srrstats {ML5.0b} The `ffnn_fit`/`rnn_fit` print methods summarise the
+#'   trained model: architecture, epochs, layer sizes, task type, data
+#'   dimensions, regularization, and device.
 #' @keywords internal
 #' @export
 print.ffnn_fit = function(x, ...) {

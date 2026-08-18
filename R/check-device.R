@@ -5,6 +5,10 @@
 #'
 #' @param device Character. Requested device.
 #' @return Character string of validated device.
+#'
+#' @srrstats {G2.3a} Only the documented values `"cpu"`, `"cuda"`, `"mps"`
+#'   are permitted; anything else errors informatively.
+#' @srrstats {G2.3b} `tolower()` makes the device argument case-insensitive.
 #' @keywords internal
 validate_device = function(device) {
     device = tolower(device)

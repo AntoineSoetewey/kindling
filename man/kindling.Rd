@@ -151,6 +151,7 @@ Useful links:
 
 Authors:
 \itemize{
+  \item Joshua Marie \email{joshua.marie.k@gmail.com}
   \item Antoine Soetewey \email{antoine.soetewey@uclouvain.be} (\href{https://orcid.org/0000-0001-8159-0804}{ORCID})
 }
 

@@ -178,6 +178,12 @@ ffnn_impl =
         cli::cli_abort("Package {.pkg torch} is required but not installed.")
     }
     
+    check_training_args(epochs, batch_size, learn_rate, validation_split, verbose, cache_weights)
+    validate_regularization(penalty, mixture)
+    if (!is.matrix(x)) x = as.matrix(x)
+    check_predictor_matrix(x)
+    check_outcome(y, nrow(x))
+
     # Device selection
     if (is.null(device)) {
         device = get_default_device()
@@ -188,9 +194,7 @@ ffnn_impl =
     if (verbose) {
         cli::cli_alert_info("Using device: {device}")
     }
-    
-    validate_regularization(penalty, mixture)
-    
+
     feature_names = colnames(x)
     if (is.null(feature_names)) {
         feature_names = paste0("V", seq_len(ncol(x)))

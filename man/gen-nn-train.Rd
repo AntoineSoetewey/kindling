@@ -34,6 +34,8 @@ train_nn(x, ...)
   device = NULL,
   verbose = FALSE,
   cache_weights = FALSE,
+  initial_model = NULL,
+  track_optim_path = FALSE,
   ...
 )
 
@@ -59,6 +61,8 @@ train_nn(x, ...)
   device = NULL,
   verbose = FALSE,
   cache_weights = FALSE,
+  initial_model = NULL,
+  track_optim_path = FALSE,
   ...
 )
 
@@ -84,6 +88,8 @@ train_nn(x, ...)
   device = NULL,
   verbose = FALSE,
   cache_weights = FALSE,
+  initial_model = NULL,
+  track_optim_path = FALSE,
   ...
 )
 
@@ -201,6 +207,22 @@ intervals during training. Default \code{FALSE}.}
 \item{cache_weights}{Logical. If \code{TRUE}, stores a copy of the trained weight
 matrices in the returned object under \verb{$cached_weights}. Default \code{FALSE}.}
 
+\item{initial_model}{A previously trained kindling model of class
+\code{nn_fit} -- from an earlier \code{train_nn()} call or reloaded with
+\code{\link[=load_kindling]{load_kindling()}} -- to warm-start from. Training continues on a deep
+copy of its trained module (the supplied object is left untouched).
+The architecture arguments (\code{hidden_neurons}, \code{activations},
+\code{output_activation}, \code{architecture}) are ignored and inherited from
+the initial model, whose input/output dimensions must match the
+supplied data. Supported by the \code{matrix}, \code{data.frame}, and \code{formula}
+methods. Default \code{NULL} (train from scratch).}
+
+\item{track_optim_path}{Logical. If \code{TRUE}, retain per-epoch information
+on the path taken by the optimizer in the returned object's
+\code{optim_path} component: the loss value, the global gradient norm, and
+a hash of all model parameters at each epoch. Default \code{FALSE} (only
+\code{loss_history} is retained).}
+
 \item{data}{A data frame. Required when \code{x} is a formula.}
 
 \item{flatten_input}{Logical or \code{NULL} (dataset method only). Controls whether
@@ -247,6 +269,9 @@ The returned \code{"nn_fit"} object is a named list with the following component
 actual epochs run (relevant when early stopping is active)
 \item \code{val_loss_history} — per-epoch validation loss, or \code{NULL} if
 \code{validation_split = 0}
+\item \code{optim_path} — when \code{track_optim_path = TRUE}, a data frame with one
+row per epoch (\code{epoch}, \code{loss}, \code{grad_norm}, \code{param_hash}) recording
+the optimizer's path; otherwise \code{NULL}
 \item \code{n_epochs} — number of epochs actually trained
 \item \code{stopped_epoch} — epoch at which early stopping triggered, or \code{NA} if
 training ran to completion
@@ -275,6 +300,53 @@ shaped for your first layer (commonly \verb{[channels, height, width]} for
 \code{torch::nn_conv2d}). If your source arrays are channel-last, reorder in the
 dataset or via \code{input_transform}.
 }
+}
+
+\section{Training, validation, and test data}{
+
+\code{train_nn()} always treats the data it receives as \strong{training} data.
+A \strong{validation} subset can be carved out of it with \code{validation_split}
+(used only to monitor \code{val_loss_history} and to drive \code{\link[=early_stop]{early_stop()}});
+\strong{test} data is never seen during training and should be supplied
+post-hoc to \code{\link[=predict.nn_fit]{predict.nn_fit()}}, or managed by resampling tools such as
+\code{rsample::initial_split()} in the tidymodels workflow demonstrated in
+\code{vignette("kindling")}. This proportion-based design (rather than
+labelled train/test inputs) follows tidymodels conventions, where data
+partitioning is the responsibility of \code{rsample}/\code{tune}.
+
+Outcomes supplied as \code{ordered} factors are treated as plain, unordered
+class labels: the ordering is ignored and the factor levels are used as
+categories.
+}
+
+\section{Missing values}{
+
+kindling models cannot be trained on missing (\code{NA}) or non-finite
+(\code{NaN}, \code{Inf}) values: torch tensors have no notion of R's \code{NA}, so all
+inputs are checked up front and an informative error is raised instead
+of propagating undefined values. Imputation is deliberately delegated to
+the pre-processing layer of the modelling workflow, e.g.
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{recipes::recipe(y ~ ., data = dat) |>
+    recipes::step_impute_mean(recipes::all_numeric_predictors())
+}\if{html}{\out{</div>}}
+
+or drop incomplete rows with \code{tidyr::drop_na()} before fitting.
+}
+
+\section{Learning rate, batch size, and epochs}{
+
+The default \code{learn_rate = 0.001} is a common starting point for the
+default \code{"adam"} optimizer but is not universally valid: too high a rate
+can make the loss diverge, too low a rate slows convergence. Adaptive
+optimizers (\code{"adam"}, \code{"rmsprop"}) adjust per-parameter step sizes
+automatically, which is kindling's mechanism for automatic training-rate
+adaptation; inspect \code{loss_history} (e.g. via \code{ggplot2::autoplot()}) to
+diagnose a poorly chosen rate. Smaller \code{batch_size} values give noisier
+but more frequent parameter updates per epoch; larger values give
+smoother gradients but fewer updates, typically requiring more \code{epochs}.
+One \emph{epoch} is one full pass over the training data; each epoch performs
+\code{ceiling(n / batch_size)} gradient updates.
 }
 
 \section{Matrix method}{
@@ -404,6 +476,24 @@ if (torch::torch_is_installed()) {
         validation_split = 0.2,
         early_stopping = early_stop(patience = 10)
     )
+
+    # Track the optimizer's path, then inspect it
+    model = train_nn(
+        x = Sepal.Length ~ .,
+        data = iris[, 1:4],
+        hidden_neurons = 16,
+        epochs = 20,
+        track_optim_path = TRUE
+    )
+    head(model$optim_path)
+
+    # Warm-start: continue training a previous (or reloaded) model
+    model2 = train_nn(
+        x = Sepal.Length ~ .,
+        data = iris[, 1:4],
+        initial_model = model,
+        epochs = 20
+    )
 }
 }
 
@@ -456,5 +546,6 @@ if (torch::torch_is_installed()) {
 
 }
 \seealso{
-\code{\link[=predict.nn_fit]{predict.nn_fit()}}, \code{\link[=nn_arch]{nn_arch()}}, \code{\link[=act_funs]{act_funs()}}, \code{\link[=early_stop]{early_stop()}}
+\code{\link[=predict.nn_fit]{predict.nn_fit()}}, \code{\link[=nn_arch]{nn_arch()}}, \code{\link[=act_funs]{act_funs()}}, \code{\link[=early_stop]{early_stop()}},
+\code{\link[=save_kindling]{save_kindling()}} / \code{\link[=load_kindling]{load_kindling()}}
 }

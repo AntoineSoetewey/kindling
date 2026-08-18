@@ -50,6 +50,7 @@ Suggests:
     yardstick,
     mlbench,
     modeldata,
+    nnet,
     vip,
     knitr,
     rmarkdown,
@@ -63,10 +64,10 @@ SystemRequirements: LibTorch (>= 1.13, via torch::install_torch())
 Additional_repositories: https://cran.r-universe.dev
 Remotes: cran/vip@0.4.6
 Config/testthat/edition: 3
-Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.3
+Roxygen: list(markdown = TRUE, roclets = c ("namespace", "rd", "srr::srr_stats_roclet"))
 Depends: 
     R (>= 4.1.0)  
 URL: https://kindling.joshuamarie.com, https://github.com/joshuamarie/kindling
 BugReports: https://github.com/joshuamarie/kindling/issues
 VignetteBuilder: knitr
+Config/roxygen2/version: 8.1.0

@@ -1,3 +1,7 @@
+#' @srrstats {G5.0} Tests across the suite use standard, widely-known data
+#'   sets (iris here and elsewhere, mtcars, mlbench::Ionosphere) plus
+#'   simulated data with known properties (test-srr-correctness.R).
+
 skip_if_no_torch = function() {
     skip_if_not_installed("torch")
     skip_if_not(torch::torch_is_installed(), "Torch backend not available")

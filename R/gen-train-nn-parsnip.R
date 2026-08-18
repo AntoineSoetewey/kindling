@@ -112,6 +112,26 @@
 #' }
 #' }
 #'
+#' @srrstats {ML3.0} Model specification is a distinct stage: this function
+#'   (like `mlp_kindling()` / `rnn_kindling()`) returns an *unfitted*
+#'   parsnip model specification, fitted later via `parsnip::fit()`.
+#' @srrstats {ML3.0a} The specification function never trains; fitting only
+#'   happens on the explicit `fit()` call.
+#' @srrstats {ML3.0b} Specifications accept the outputs of the tidymodels
+#'   input/pre-processing stage (recipes, formulas) through
+#'   `workflows::add_recipe()` + `add_model()`.
+#' @srrstats {ML3.0c} The returned specification object is directly
+#'   trainable via `parsnip::fit()` / `tune::tune_grid()`.
+#' @srrstats {ML3.0d} The specification class has a `print` method
+#'   (`print.train_nnsnip()`) summarising all main parameter values.
+#' @srrstats {ML3.2} The same specification object can be combined with
+#'   different pre-processing objects (and vice versa) via `workflows`,
+#'   and updated in place via `update.train_nnsnip()`, without re-defining
+#'   the other stage.
+#' @srrstats {ML4.0} Training is a unified single-function interface:
+#'   `parsnip::fit()` on any kindling specification, or `train_nn()`
+#'   directly, both accept categorically different architectures and
+#'   optimizers through one entry point.
 #' @export
 train_nnsnip =
     function(

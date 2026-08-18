@@ -20,6 +20,10 @@
 #'   }
 #' }
 #'
+#' @srrstats {ML4.2} Extraction and inspection of the retained optimizer
+#'   path (per-epoch loss and validation loss) is documented here and in
+#'   the examples: `autoplot()` visualises `loss_history` /
+#'   `val_loss_history`, which are also directly accessible on the fit.
 #' @keywords internal
 #' @export
 #' @method autoplot nn_fit
@@ -142,9 +146,10 @@ autoplot_diagnostics = function(object, actual, ...) {
     }
 
     n_fitted = if (is.matrix(object$fitted)) nrow(object$fitted) else length(object$fitted)
-    if (length(actual) != n_fitted) {
+    n_actual = if (is.matrix(actual)) nrow(actual) else length(actual)
+    if (n_actual != n_fitted) {
         cli::cli_abort(
-            "{.arg actual} has length {length(actual)} but {.field fitted} has length {n_fitted}: they must match."
+            "{.arg actual} has {n_actual} observation{?s} but {.field fitted} has {n_fitted}: they must match."
         )
     }
 
