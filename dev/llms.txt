@@ -1,0 +1,240 @@
+# kindling
+
+## Package overview
+
+Title: ***Higher-Level Interface of ‘torch’ Package to Auto-Train Neural
+Networks***
+
+Whether you’re generating neural network architecture expressions or
+directly fitting/training models,
+[kindling](https://kindling.joshuamarie.com) minimizes boilerplate code
+while preserving [torch](https://torch.mlverse.org/docs). Since this
+package uses [torch](https://torch.mlverse.org/docs) as its backend, GPU
+acceleration is supported.
+
+[kindling](https://kindling.joshuamarie.com) also bridges the gap
+between [torch](https://torch.mlverse.org/docs) and
+[tidymodels](https://tidymodels.tidymodels.org). It works seamlessly
+with [parsnip](https://github.com/tidymodels/parsnip),
+[recipes](https://github.com/tidymodels/recipes), and
+[workflows](https://github.com/tidymodels/workflows) to bring deep
+learning into your existing
+[tidymodels](https://tidymodels.tidymodels.org) modeling pipeline. This
+enables a streamlined interface for building, training, and tuning deep
+learning models within the familiar
+[tidymodels](https://tidymodels.tidymodels.org) ecosystem.
+
+### Main Features
+
+- Code generation of [torch](https://torch.mlverse.org/docs) expression
+
+- Multiple architectures available
+
+  - Base models interface: feedforward networks (MLP/DNN/FFNN) and
+    recurrent variants (RNN, LSTM, GRU)
+  - Generalized neural network trainer that has the same topology as
+    MLPs
+
+- Native support for R ML workflows and pipelines (currently
+  [tidymodels](https://tidymodels.tidymodels.org);
+  [mlr3](https://mlr3.mlr-org.com) planned)
+
+- Fine-grained control over network depth, layer sizes, and activation
+  functions
+
+- GPU acceleration support via [torch](https://torch.mlverse.org/docs)
+  tensors
+
+## Installation
+
+You can install [kindling](https://kindling.joshuamarie.com) on CRAN:
+
+``` r
+
+install.packages('kindling')
+```
+
+Or install the development version from GitHub:
+
+``` r
+
+# install.packages("pak")
+pak::pak("joshuamarie/kindling")
+## devtools::install_github("joshuamarie/kindling")
+```
+
+## Learn more
+
+- [Getting Started with
+  kindling](https://kindling.joshuamarie.com/articles/kindling.html)
+- [Tuning
+  Capabilities](https://kindling.joshuamarie.com/articles/tuning-capabilities.html)
+- [Custom Activation
+  Function](https://kindling.joshuamarie.com/articles/custom-act-fn.html)
+- [Special Cases: Linear and Logistic
+  Regression](https://kindling.joshuamarie.com/articles/special-cases.html)
+- [Similar Packages and
+  Comparison](https://kindling.joshuamarie.com/articles/similar-packages.html)
+
+## References
+
+Falbel D, Luraschi J (2023). *torch: Tensors and Neural Networks with
+‘GPU’ Acceleration*. R package version 0.13.0,
+<https://torch.mlverse.org>, <https://github.com/mlverse/torch>.
+
+Wickham H (2019). *Advanced R*, 2nd edition. Chapman and Hall/CRC. ISBN
+978-0815384571, <https://adv-r.hadley.nz/>.
+
+Goodfellow I, Bengio Y, Courville A (2016). *Deep Learning*. MIT Press.
+<https://www.deeplearningbook.org/>.
+
+## Citation
+
+If you use [kindling](https://kindling.joshuamarie.com) in a
+publication, please cite it. Run `citation("kindling")` in R to get the
+current citation, or see the [CITATION
+file](https://github.com/joshuamarie/kindling/blob/main/inst/CITATION).
+
+## License
+
+MIT + file LICENSE
+
+## Code of Conduct
+
+Please note that the kindling project is released with a [Contributor
+Code of
+Conduct](https://contributor-covenant.org/version/2/1/CODE_OF_CONDUCT.html).
+By contributing to this project, you agree to abide by its terms.
+
+# Package index
+
+## Model Specifications
+
+Define neural network architectures for tidymodels
+
+- [`mlp_kindling()`](https://kindling.joshuamarie.com/dev/reference/mlp_kindling.md)
+  : Multi-Layer Perceptron (Feedforward Neural Network) via kindling
+
+- [`rnn_kindling()`](https://kindling.joshuamarie.com/dev/reference/rnn_kindling.md)
+  : Recurrent Neural Network via kindling
+
+- [`train_nnsnip()`](https://kindling.joshuamarie.com/dev/reference/train_nnsnip.md)
+  **\[experimental\]** :
+
+  Parsnip Interface of
+  [`train_nn()`](https://kindling.joshuamarie.com/dev/reference/gen-nn-train.md)
+
+## Training Functions
+
+Direct training interface (Level 2)
+
+### Generalized Neural Network Trainer
+
+- [`train_nn()`](https://kindling.joshuamarie.com/dev/reference/gen-nn-train.md)
+  **\[experimental\]** : Generalized Neural Network Trainer
+- [`nn_arch()`](https://kindling.joshuamarie.com/dev/reference/nn_arch.md)
+  : Architecture specification for train_nn()
+
+### Base Models
+
+- [`ffnn()`](https://kindling.joshuamarie.com/dev/reference/kindling-basemodels.md)
+  [`rnn()`](https://kindling.joshuamarie.com/dev/reference/kindling-basemodels.md)
+  : Base models for Neural Network Training in kindling
+
+### Utility Functions
+
+- [`nn_arch()`](https://kindling.joshuamarie.com/dev/reference/nn_arch.md)
+  : Architecture specification for train_nn()
+- [`early_stop()`](https://kindling.joshuamarie.com/dev/reference/early_stop.md)
+  : Early Stopping Specification
+
+## Code Generators
+
+Generate
+[`torch::nn_module()`](https://torch.mlverse.org/docs/reference/nn_module.html)
+code (Lowest Level)
+
+### General-purpose / low-level generator, including the layer utilities & pronouns
+
+- [`nn_module_generator()`](https://kindling.joshuamarie.com/dev/reference/nn_module_generator.md)
+  **\[experimental\]** : Generalized Neural Network Module Expression
+  Generator
+- [`.layer`](https://kindling.joshuamarie.com/dev/reference/layer_prs.md)
+  [`.i`](https://kindling.joshuamarie.com/dev/reference/layer_prs.md)
+  [`.in`](https://kindling.joshuamarie.com/dev/reference/layer_prs.md)
+  [`.out`](https://kindling.joshuamarie.com/dev/reference/layer_prs.md)
+  [`.is_output`](https://kindling.joshuamarie.com/dev/reference/layer_prs.md)
+  : Layer argument pronouns for formula-based specifications
+
+### High-level generators
+
+- [`ffnn_generator()`](https://kindling.joshuamarie.com/dev/reference/nn_gens.md)
+  [`rnn_generator()`](https://kindling.joshuamarie.com/dev/reference/nn_gens.md)
+  :
+
+  Functions to generate `nn_module` (language) expression
+
+## Variable Importance
+
+Interpret neural network models
+
+- [`garson(`*`<ffnn_fit>`*`)`](https://kindling.joshuamarie.com/dev/reference/kindling-varimp.md)
+  [`olden(`*`<ffnn_fit>`*`)`](https://kindling.joshuamarie.com/dev/reference/kindling-varimp.md)
+  [`vi_model.ffnn_fit()`](https://kindling.joshuamarie.com/dev/reference/kindling-varimp.md)
+  : Variable Importance Methods for kindling Models
+
+## Tuning Parameters
+
+Hyperparameter specifications for tidymodels
+
+- [`n_hlayers()`](https://kindling.joshuamarie.com/dev/reference/dials-kindling.md)
+  [`hidden_neurons()`](https://kindling.joshuamarie.com/dev/reference/dials-kindling.md)
+  [`activations()`](https://kindling.joshuamarie.com/dev/reference/dials-kindling.md)
+  [`output_activation()`](https://kindling.joshuamarie.com/dev/reference/dials-kindling.md)
+  [`optimizer()`](https://kindling.joshuamarie.com/dev/reference/dials-kindling.md)
+  [`bias()`](https://kindling.joshuamarie.com/dev/reference/dials-kindling.md)
+  [`validation_split()`](https://kindling.joshuamarie.com/dev/reference/dials-kindling.md)
+  [`bidirectional()`](https://kindling.joshuamarie.com/dev/reference/dials-kindling.md)
+  :
+
+  Tunable hyperparameters for `kindling` models
+
+## Helper Functions
+
+Utilities for model configuration
+
+- [`act_funs()`](https://kindling.joshuamarie.com/dev/reference/act_funs.md)
+  : Activation Functions Specification Helper
+- [`args()`](https://kindling.joshuamarie.com/dev/reference/args.md)
+  **\[superseded\]** : Activation Function Arguments Helper
+- [`new_act_fn()`](https://kindling.joshuamarie.com/dev/reference/new_act_fn.md)
+  **\[experimental\]** : Custom Activation Function Constructor
+- [`grid_depth()`](https://kindling.joshuamarie.com/dev/reference/grid_depth.md)
+  : Depth-Aware Grid Generation for Neural Networks
+- [`table_summary()`](https://kindling.joshuamarie.com/dev/reference/table_summary.md)
+  : Summarize and Display a Two-Column Data Frame as a Formatted Table
+- [`ordinal_gen()`](https://kindling.joshuamarie.com/dev/reference/ordinal_gen.md)
+  : Ordinal Suffixes Generator
+
+## Diagnostics
+
+Plotting helpers for fitted neural network objects
+
+- [`autoplot_diagnostics()`](https://kindling.joshuamarie.com/dev/reference/autoplot_diagnostics.md)
+  [`plot_diagnostics()`](https://kindling.joshuamarie.com/dev/reference/autoplot_diagnostics.md)
+  : Plot prediction diagnostics for a fitted neural network
+
+# Articles
+
+### Get started
+
+- [Getting Started with
+  kindling](https://kindling.joshuamarie.com/dev/articles/kindling.md):
+- [Similar packages and
+  comparison](https://kindling.joshuamarie.com/dev/articles/similar-packages.md):
+- [Tuning
+  Capabilities](https://kindling.joshuamarie.com/dev/articles/tuning-capabilities.md):
+- [Special Cases: Linear and Logistic
+  Regression](https://kindling.joshuamarie.com/dev/articles/special-cases.md):
+- [Custom Activation
+  Function](https://kindling.joshuamarie.com/dev/articles/custom-act-fn.md):
