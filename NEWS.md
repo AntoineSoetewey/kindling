@@ -1,5 +1,33 @@
 # kindling (development version)
 
+## New features
+
+-   `save_kindling()` and `load_kindling()` save and reload a trained model.
+    Base `saveRDS()` does not work for `{kindling}` fits, since the
+    underlying `torch::nn_module` holds external pointers that don't
+    survive plain R serialization.
+
+-   `train_nn()` gains `initial_model` to warm-start training from a
+    previously trained (or reloaded) fit, and `track_optim_path` to
+    optionally retain per-epoch loss, gradient norm, and a parameter hash
+    in the returned object's `$optim_path`.
+
+-   Training functions (`train_nn()`, `ffnn()`, `rnn()`) and `predict()`
+    now validate their inputs up front and error informatively on empty
+    data, non-numeric predictors, missing/non-finite values, and length
+    mismatches, instead of failing deep inside `{torch}`.
+
+## Documentation
+
+-   Added a Life Cycle Statement to `CONTRIBUTING.md`.
+
+-   `?train_nn` gains sections clarifying training/validation/test data
+    semantics, the missing-value policy (with a `{recipes}` imputation
+    example), and guidance on learning rate, batch size, and epochs.
+
+-   `vignette("tuning-capabilities")` now points to custom `{yardstick}`
+    metrics via `metric_set()`.
+
 ## Ongoing features
 
 -  More visualization supports
