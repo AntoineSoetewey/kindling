@@ -277,7 +277,7 @@ to the training data.</p>
 <span><span class="co">#&gt; actual       setosa versicolor virginica</span></span>
 <span><span class="co">#&gt;   setosa         50          0         0</span></span>
 <span><span class="co">#&gt;   versicolor      0         48         2</span></span>
-<span><span class="co">#&gt;   virginica       0          3        47</span></span></code></pre></div>
+<span><span class="co">#&gt;   virginica       0          1        49</span></span></code></pre></div>
 </li>
 <li>
 <p><strong>With <code>newdata</code></strong> simply pass the new
@@ -290,8 +290,8 @@ data frame as the new reference.</p>
 <span><span class="co">#&gt;             predicted</span></span>
 <span><span class="co">#&gt; actual       setosa versicolor virginica</span></span>
 <span><span class="co">#&gt;   setosa         10          0         0</span></span>
-<span><span class="co">#&gt;   versicolor      0          9         1</span></span>
-<span><span class="co">#&gt;   virginica       0          3         7</span></span></code></pre></div>
+<span><span class="co">#&gt;   versicolor      0          8         2</span></span>
+<span><span class="co">#&gt;   virginica       0          1         9</span></span></code></pre></div>
 </li>
 </ol>
 </div>
@@ -327,8 +327,8 @@ preprocessing, cross-validation, and model evaluation.</p>
 <pre class="fansi fansi-output"><code><span><span class="co">#&gt; # A tibble: 2 × 3</span></span>
 <span><span class="co">#&gt;   .metric  .estimator .estimate</span></span>
 <span><span class="co">#&gt;   &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1 accuracy binary         0.997</span></span>
-<span><span class="co">#&gt; 2 kap      binary         0.994</span></span></code></pre>
+<span><span class="co">#&gt; 1 accuracy binary             1</span></span>
+<span><span class="co">#&gt; 2 kap      binary             1</span></span></code></pre>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># Or try a recurrent architecture (demonstrative example with tabular data)</span></span>
@@ -491,20 +491,20 @@ algorithms are available:</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/NeuralNetTools/man/garson.html" class="external-link">garson</a></span><span class="op">(</span><span class="va">model</span>, bar_plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="co">#&gt;        x_names y_names  rel_imp</span></span>
-<span><span class="co">#&gt; 1 Petal.Length       y 34.42579</span></span>
-<span><span class="co">#&gt; 2 Sepal.Length       y 23.87367</span></span>
-<span><span class="co">#&gt; 3  Petal.Width       y 21.49058</span></span>
-<span><span class="co">#&gt; 4  Sepal.Width       y 20.20997</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 Petal.Length       y 30.44184</span></span>
+<span><span class="co">#&gt; 2  Petal.Width       y 25.73609</span></span>
+<span><span class="co">#&gt; 3  Sepal.Width       y 23.33025</span></span>
+<span><span class="co">#&gt; 4 Sepal.Length       y 20.49181</span></span></code></pre></div>
 </li>
 <li>
 <p>Olden’s Algorithm</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/NeuralNetTools/man/olden.html" class="external-link">olden</a></span><span class="op">(</span><span class="va">model</span>, bar_plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="co">#&gt;        x_names y_names    rel_imp</span></span>
-<span><span class="co">#&gt; 1 Petal.Length       y  1.1563745</span></span>
-<span><span class="co">#&gt; 2  Petal.Width       y  0.8783194</span></span>
-<span><span class="co">#&gt; 3 Sepal.Length       y -0.8491473</span></span>
-<span><span class="co">#&gt; 4  Sepal.Width       y -0.6020531</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 Petal.Length       y -1.1740514</span></span>
+<span><span class="co">#&gt; 2  Petal.Width       y -0.6683236</span></span>
+<span><span class="co">#&gt; 3 Sepal.Length       y  0.6380333</span></span>
+<span><span class="co">#&gt; 4  Sepal.Width       y  0.5067770</span></span></code></pre></div>
 </li>
 </ol>
 <div class="section level3">

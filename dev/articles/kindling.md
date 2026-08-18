@@ -209,7 +209,7 @@ Two kinds of [`predict()`](https://rdrr.io/r/stats/predict.html) usage:
     #> actual       setosa versicolor virginica
     #>   setosa         50          0         0
     #>   versicolor      0         48         2
-    #>   virginica       0          3        47
+    #>   virginica       0          1        49
     ```
 
 2.  **With `newdata`** simply pass the new data frame as the new
@@ -224,8 +224,8 @@ Two kinds of [`predict()`](https://rdrr.io/r/stats/predict.html) usage:
     #>             predicted
     #> actual       setosa versicolor virginica
     #>   setosa         10          0         0
-    #>   versicolor      0          9         1
-    #>   virginica       0          3         7
+    #>   versicolor      0          8         2
+    #>   virginica       0          1         9
     ```
 
 ### Level 3: Conventional tidymodels Integration
@@ -265,8 +265,8 @@ mlp_kindling(
 #> # A tibble: 2 × 3
 #>   .metric  .estimator .estimate
 #>   <chr>    <chr>          <dbl>
-#> 1 accuracy binary         0.997
-#> 2 kap      binary         0.994
+#> 1 accuracy binary             1
+#> 2 kap      binary             1
 ```
 
 ``` r
@@ -461,10 +461,10 @@ networks. Two primary algorithms are available:
 
     garson(model, bar_plot = FALSE)
     #>        x_names y_names  rel_imp
-    #> 1 Petal.Length       y 34.42579
-    #> 2 Sepal.Length       y 23.87367
-    #> 3  Petal.Width       y 21.49058
-    #> 4  Sepal.Width       y 20.20997
+    #> 1 Petal.Length       y 30.44184
+    #> 2  Petal.Width       y 25.73609
+    #> 3  Sepal.Width       y 23.33025
+    #> 4 Sepal.Length       y 20.49181
     ```
 
 2.  Olden’s Algorithm
@@ -473,10 +473,10 @@ networks. Two primary algorithms are available:
 
     olden(model, bar_plot = FALSE)
     #>        x_names y_names    rel_imp
-    #> 1 Petal.Length       y  1.1563745
-    #> 2  Petal.Width       y  0.8783194
-    #> 3 Sepal.Length       y -0.8491473
-    #> 4  Sepal.Width       y -0.6020531
+    #> 1 Petal.Length       y -1.1740514
+    #> 2  Petal.Width       y -0.6683236
+    #> 3 Sepal.Length       y  0.6380333
+    #> 4  Sepal.Width       y  0.5067770
     ```
 
 ### Integration with {vip}
