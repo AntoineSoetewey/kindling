@@ -1,7 +1,7 @@
 box::use(
     kindling[train_nn, nn_arch, ffnn],
     torch[
-        torch_randn, torch_zeros, torch_exp, 
+        torch_randn, torch_zeros, torch_exp,
         nn_module, nn_parameter, nn_linear
     ]
 )
@@ -19,18 +19,18 @@ rbf_layer = nn_module(
         self$log_sigma = nn_parameter(torch_zeros(out_features))
         self$basis_func = basis_func
     },
-    
+
     forward = function(input) {
         batch_size = input$size(1)
-        
+
         x = input$unsqueeze(2)
         c = self$centres$unsqueeze(1)
         distances = (x - c)$pow(2)$sum(3)
-        
+
         # Use log_sigma for numerical stability
         # beta = 1 / (2 * exp(2 * log_sigma)) = exp(-2 * log_sigma) / 2
         beta = torch_exp(-2 * self$log_sigma)$unsqueeze(1) / 2
-        
+
         self$basis_func(distances * beta)
     }
 )

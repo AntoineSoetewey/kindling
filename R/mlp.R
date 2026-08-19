@@ -52,7 +52,7 @@
 #'
 #' @name kindling-basemodels
 #' @export
-ffnn = 
+ffnn =
     function(
         formula = NULL,
         data = NULL,
@@ -76,12 +76,11 @@ ffnn =
         x = NULL,
         y = NULL
     ) {
-    dots = list(...)
-    
+
     act_specs = eval_act_funs({{ activations }}, {{ output_activation }})
     activations = act_specs$activations
     output_activation = act_specs$output_activation
-    
+
     # Starting from 0.2.0
     # Use 'hardhat' package instead
     if (!is.null(x) || !is.null(y)) {
@@ -91,27 +90,27 @@ ffnn =
         if (!is.null(formula) || !is.null(data)) {
             cli::cli_warn("Both formula/data and x/y provided. Using x/y interface.")
         }
-        
+
         processed = hardhat::mold(x, y)
-        
+
     } else if (!is.null(formula)) {
         if (is.null(data)) {
             cli::cli_abort("{.arg data} must be provided when using formula interface.")
         }
-        
+
         processed = hardhat::mold(formula, data)
-        
+
     } else {
         cli::cli_abort("Must provide either {.arg formula} and {.arg data}, or {.arg x} and {.arg y}.")
     }
-    
+
     predictors = processed$predictors
     outcomes = processed$outcomes
-    
+
     if (!is.matrix(predictors)) {
         predictors = as.matrix(predictors)
     }
-    
+
     if (is.data.frame(outcomes)) {
         if (ncol(outcomes) == 1) {
             outcomes = outcomes[[1]]
@@ -121,7 +120,7 @@ ffnn =
     } else if (ncol(outcomes) == 1) {
         outcomes = outcomes[[1]]
     }
-    
+
     fit = ffnn_impl(
         x = predictors,
         y = outcomes,
@@ -142,18 +141,18 @@ ffnn =
         verbose = verbose,
         cache_weights = cache_weights
     )
-    
+
     fit$blueprint = processed$blueprint
     if (!is.null(formula)) {
         fit$formula = formula
     }
-    
+
     fit
 }
 
 #' FFNN Implementation
 #' @keywords internal
-ffnn_impl = 
+ffnn_impl =
     function(
         x,
         y,
@@ -177,7 +176,7 @@ ffnn_impl =
     if (!requireNamespace("torch", quietly = TRUE)) {
         cli::cli_abort("Package {.pkg torch} is required but not installed.")
     }
-    
+
     check_training_args(epochs, batch_size, learn_rate, validation_split, verbose, cache_weights)
     validate_regularization(penalty, mixture)
     if (!is.matrix(x)) x = as.matrix(x)
@@ -190,7 +189,7 @@ ffnn_impl =
     } else {
         device = validate_device(device)
     }
-    
+
     if (verbose) {
         cli::cli_alert_info("Using device: {device}")
     }
@@ -199,17 +198,17 @@ ffnn_impl =
     if (is.null(feature_names)) {
         feature_names = paste0("V", seq_len(ncol(x)))
     }
-    
+
     response_name = if (is.null(names(y))) "y" else names(y)[1]
     is_classification = is.factor(y) || is.character(y)
-    
+
     if (is_classification) {
         if (is.character(y)) y = as.factor(y)
         y_levels = levels(y)
         n_classes = length(y_levels)
         y_numeric = as.integer(y)
         no_y = n_classes
-        
+
         if (loss == "mse") {
             loss = "cross_entropy"
             if (verbose) {
@@ -222,15 +221,15 @@ ffnn_impl =
         y_numeric = if (is.matrix(y)) y else as.numeric(y)
         no_y = if (is.matrix(y)) ncol(y) else 1L
     }
-    
+
     no_x = ncol(x)
     n_obs = nrow(x)
-    
+
     if (validation_split > 0 && validation_split < 1) {
         n_val = floor(n_obs * validation_split)
         val_idx = sample(n_obs, n_val)
         train_idx = setdiff(seq_len(n_obs), val_idx)
-        
+
         x_train = x[train_idx, , drop = FALSE]
         y_train = y_numeric[train_idx]
         x_val = x[val_idx, , drop = FALSE]
@@ -241,9 +240,9 @@ ffnn_impl =
         x_val = NULL
         y_val = NULL
     }
-    
+
     x_train_t = torch::torch_tensor(x_train, dtype = torch::torch_float32(), device = device)
-    
+
     if (is_classification) {
         y_train_t = torch::torch_tensor(y_train, dtype = torch::torch_long(), device = device)
     } else {
@@ -253,7 +252,7 @@ ffnn_impl =
             device = device
         )
     }
-    
+
     if (!is.null(x_val)) {
         x_val_t = torch::torch_tensor(x_val, dtype = torch::torch_float32(), device = device)
         if (is_classification) {
@@ -266,7 +265,7 @@ ffnn_impl =
             )
         }
     }
-    
+
     model_expr = ffnn_generator(
         nn_name = "FFNN",
         hd_neurons = hidden_neurons,
@@ -278,14 +277,14 @@ ffnn_impl =
     )
     model = eval(model_expr)()
     model$to(device = device)
-    
+
     validate_optimizer(tolower(optimizer))
     optimizer_fn = get(paste0("optim_", tolower(optimizer)), envir = asNamespace("torch"))
     opt = do.call(
         optimizer_fn,
         c(list(params = model$parameters, lr = learn_rate), optimizer_args)
     )
-    
+
     loss_fn = switch(
         tolower(loss),
         mse = function(input, target) torch::nnf_mse_loss(input, target),
@@ -294,24 +293,24 @@ ffnn_impl =
         bce = function(input, target) torch::nnf_binary_cross_entropy_with_logits(input, target),
         cli::cli_abort("Unknown loss function: {loss}")
     )
-    
+
     loss_history = numeric(epochs)
     val_loss_history = if (!is.null(x_val)) numeric(epochs) else NULL
     n_batches = ceiling(nrow(x_train) / batch_size)
-    
+
     for (epoch in seq_len(epochs)) {
         model$train()
         epoch_loss = 0
         idx = sample(nrow(x_train))
-        
+
         for (batch in seq_len(n_batches)) {
             start_idx = (batch - 1) * batch_size + 1
             end_idx = min(batch * batch_size, nrow(x_train))
             batch_idx = idx[start_idx:end_idx]
-            
+
             x_batch = x_train_t[batch_idx, ]
             y_batch = y_train_t[batch_idx]
-            
+
             opt$zero_grad()
             y_pred = model(x_batch)
             loss = loss_fn(y_pred, y_batch)
@@ -319,12 +318,12 @@ ffnn_impl =
             total_loss = loss + reg_loss
             total_loss$backward()
             opt$step()
-            
+
             epoch_loss = epoch_loss + total_loss$item()
         }
-        
+
         loss_history[epoch] = epoch_loss / n_batches
-        
+
         if (!is.null(x_val)) {
             model$eval()
             torch::with_no_grad({
@@ -333,7 +332,7 @@ ffnn_impl =
                 val_loss_history[epoch] = val_loss$item()
             })
         }
-        
+
         if (verbose && (epoch %% max(1, epochs %/% 10) == 0 || epoch == epochs)) {
             msg = sprintf("Epoch %d/%d - Loss: %.4f", epoch, epochs, loss_history[epoch])
             if (!is.null(val_loss_history)) {
@@ -342,12 +341,12 @@ ffnn_impl =
             message(msg)
         }
     }
-    
+
     model$eval()
     fitted_tensor = torch::with_no_grad({
         model(torch::torch_tensor(x, dtype = torch::torch_float32(), device = device))
     })
-    
+
     if (is_classification) {
         fitted_probs = torch::nnf_softmax(fitted_tensor, dim = 2)
         fitted_classes = torch::torch_argmax(fitted_probs, dim = 2)
@@ -357,7 +356,7 @@ ffnn_impl =
         fitted_values = as.matrix(fitted_tensor$cpu())
         if (no_y == 1L) fitted_values = as.vector(fitted_values)
     }
-    
+
     cached_weights = NULL
     if (cache_weights) {
         n_hidden = length(hidden_neurons)
@@ -365,7 +364,7 @@ ffnn_impl =
         W_input = as.matrix(input_layer$weight$cpu())
         output_layer = model$out
         W_output = as.matrix(output_layer$weight$cpu())
-        
+
         intermediate_weights = list()
         if (n_hidden > 1) {
             for (i in seq_len(n_hidden - 1)) {
@@ -373,14 +372,14 @@ ffnn_impl =
                 intermediate_weights[[i]] = as.matrix(layer$weight$cpu())
             }
         }
-        
+
         cached_weights = list(
             input = W_input,
             output = W_output,
             intermediate = intermediate_weights
         )
     }
-    
+
     structure(
         list(
             model = model,
@@ -433,41 +432,41 @@ predict.ffnn_fit = function(object, newdata = NULL, new_data = NULL, type = "res
     if (!requireNamespace("torch", quietly = TRUE)) {
         cli::cli_abort("Package {.pkg torch} is required but not installed.")
     }
-    
+
     if (!is.null(new_data) && is.null(newdata)) {
         newdata = new_data
     }
-    
+
     device = object$device
-    
+
     if (is.null(newdata)) {
         if (type == "prob" && object$is_classification) {
             cli::cli_abort("Cannot compute probabilities without {.arg newdata}. Use the fitted values instead.")
         }
         return(object$fitted)
     }
-    
+
     if (!is.null(object$blueprint)) {
         processed = hardhat::forge(newdata, object$blueprint)
         x_new = processed$predictors
     } else {
         x_new = newdata
     }
-    
+
     if (!is.matrix(x_new)) {
         x_new = as.matrix(x_new)
     }
-    
+
     x_new_t = torch::torch_tensor(x_new, dtype = torch::torch_float32(), device = device)
-    
+
     object$model$eval()
     pred_tensor = torch::with_no_grad({
         object$model(x_new_t)
     })
-    
+
     if (object$is_classification) {
         probs = torch::nnf_softmax(pred_tensor, dim = 2)
-        
+
         if (type == "prob") {
             prob_matrix = as.matrix(probs$cpu())
             colnames(prob_matrix) = object$y_levels
@@ -493,6 +492,6 @@ predict.ffnn_fit = function(object, newdata = NULL, new_data = NULL, type = "res
     if (name %in% names(x)) {
         return(x[[name]])
     }
-    
+
     attr(x, name, exact = TRUE)
 }

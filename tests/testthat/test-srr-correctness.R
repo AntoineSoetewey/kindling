@@ -98,7 +98,8 @@ test_that("a larger early-stopping threshold stops training earlier (G5.7)", {
     skip_if_no_torch()
     dat = make_linear_data(120)
     fit_loose = local({
-        set.seed(7); torch::torch_manual_seed(7)
+        set.seed(7)
+        torch::torch_manual_seed(7)
         train_nn(
             y ~ x1 + x2, data = dat, epochs = 200, learn_rate = 0.05,
             device = "cpu",
@@ -106,7 +107,8 @@ test_that("a larger early-stopping threshold stops training earlier (G5.7)", {
         )
     })
     fit_tight = local({
-        set.seed(7); torch::torch_manual_seed(7)
+        set.seed(7)
+        torch::torch_manual_seed(7)
         train_nn(
             y ~ x1 + x2, data = dat, epochs = 200, learn_rate = 0.05,
             device = "cpu",

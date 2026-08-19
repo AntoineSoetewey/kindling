@@ -56,4 +56,3 @@ test_that("make_kindling() fully registers all three models with parsnip", {
 test_that("make_kindling() takes the early-return guard on a second call", {
     expect_true(make_kindling())
 })
-

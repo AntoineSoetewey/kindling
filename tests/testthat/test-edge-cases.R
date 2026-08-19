@@ -72,7 +72,7 @@ test_that("mlp_kindling handles deep neural networks and accepts both using `lis
     spec = mlp_kindling(
         mode = "classification",
         hidden_neurons = list(5, 10, 7),
-        activations = list('relu', 'softshrink(lambd = 0.5)', 'celu(alpha = 0.8)'),
+        activations = list("relu", "softshrink(lambd = 0.5)", "celu(alpha = 0.8)"),
         epochs = 5,
         verbose = FALSE
     )

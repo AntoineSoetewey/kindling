@@ -90,8 +90,7 @@ rnn_kindling =
         device = NULL,
         verbose = NULL,
         cache_weights = NULL
-    )
-    {
+    ) {
 
         if (!requireNamespace("parsnip", quietly = TRUE)) {
             cli::cli_abort("Package {.pkg parsnip} is required but not installed.")
@@ -172,8 +171,7 @@ update.rnn_kindling =
         cache_weights = NULL,
         fresh = FALSE,
         ...
-    )
-    {
+    ) {
 
         args = list(
             hidden_neurons = rlang::enquo(hidden_neurons),

@@ -13,8 +13,7 @@ concat = function(x) {
             sep = " = ",
             collapse = ", "
         )
-        # glue::glue("{fname}({params})")
-        sprintf("%s(%s)", fname, params)
+            sprintf("%s(%s)", fname, params)
     } else {
         as.character(x)
     }
@@ -114,7 +113,6 @@ print.ffnn_fit = function(x, ...) {
             if (x$is_classification) "classification" else "regression",
             as.character(x$no_x),
             as.character(x$no_y),
-            # if (x$penalty == 0) "None" else glue("[\u03BB = {x$penalty}, \u03B1 = {x$mixture}]"),
             if (x$penalty == 0) "None" else paste0("[\u03BB = ", x$penalty, ", ", "\u03B1 = ", x$mixture, "]"),
             x$device
         ),
@@ -223,7 +221,6 @@ print.rnn_fit = function(x, ...) {
             if (x$is_classification) "classification" else "regression",
             as.character(x$no_x),
             as.character(x$no_y),
-            # if (x$penalty == 0) "None" else glue("[\u03BB = {x$penalty}, \u03B1 = {x$mixture}]"),
             if (x$penalty == 0) "None" else paste0("[\u03BB = ", x$penalty, ", ", "\u03B1 = ", x$mixture, "]"),
             x$device
         ),

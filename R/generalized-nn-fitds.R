@@ -25,7 +25,7 @@
 #'     # torch dataset method — labels come from the dataset itself
 #'     iris_cls_dataset = torch::dataset(
 #'         name = "iris_cls_dataset",
-#'         
+#'
 #'         initialize = function(data = iris) {
 #'             self$x = torch::torch_tensor(
 #'                 as.matrix(data[, 1:4]),
@@ -37,16 +37,16 @@
 #'                 dtype = torch::torch_long()
 #'             )
 #'         },
-#'         
+#'
 #'         .getitem = function(i) {
 #'             list(self$x[i, ], self$y[i])
 #'         },
-#'         
+#'
 #'         .length = function() {
 #'             self$x$size(1)
 #'         }
 #'     )()
-#'     
+#'
 #'     model_nn_ds = train_nn(
 #'         x = iris_cls_dataset,
 #'         hidden_neurons = c(32, 10),
@@ -58,10 +58,10 @@
 #'         validation_split = 0.2,
 #'         verbose = TRUE
 #'     )
-#'     
+#'
 #'     pred_nn = predict(model_nn_ds, iris_cls_dataset)
 #'     class_preds = c("Setosa", "Versicolor", "Virginica")[predict(model_nn_ds, iris_cls_dataset)]
-#'     
+#'
 #'     # Confusion Matrix
 #'     table(actual = iris$Species, pred = class_preds)
 #' }
@@ -69,7 +69,7 @@
 #'
 #' @rdname gen-nn-train
 #' @export
-train_nn.dataset = 
+train_nn.dataset =
     function(
         x,
         y = NULL,
@@ -94,8 +94,7 @@ train_nn.dataset =
         cache_weights = FALSE,
         n_classes = NULL,
         ...
-    ) 
-{
+    ) {
     if (!requireNamespace("torch", quietly = TRUE)) {
         cli::cli_abort("Package {.pkg torch} is required but not installed.")
     }
@@ -241,7 +240,7 @@ train_nn.dataset =
 
 #' train_nn implementation for torch datasets
 #' @keywords internal
-train_nn_impl_dataset = 
+train_nn_impl_dataset =
     function(
         dataset,
         no_x,
@@ -266,8 +265,7 @@ train_nn_impl_dataset =
         flatten_input = TRUE,
         arch = NULL,
         fit_class = "nn_fit_ds"
-    ) 
-{
+    ) {
     if (missing(hidden_neurons) || is.null(hidden_neurons) || length(hidden_neurons) == 0L) {
         hidden_neurons = integer(0L)
     }
@@ -327,7 +325,7 @@ train_nn_impl_dataset =
     }
 
     arch_env = if (!is.null(arch)) attr(arch, "env") else parent.frame()
-    
+
     model_expr = do.call(
         nn_module_generator,
         c(
@@ -496,15 +494,14 @@ train_nn_impl_dataset =
 #' @rdname gen-nn-predict
 #' @keywords internal
 #' @export
-predict.nn_fit_ds = 
+predict.nn_fit_ds =
     function(
         object,
         newdata = NULL,
         new_data = NULL,
         type = "response",
         ...
-    ) 
-{
+    ) {
     newdata = .resolve_predict_newdata(newdata = newdata, new_data = new_data)
 
     if (!type %in% c("response", "prob")) {

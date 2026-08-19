@@ -58,6 +58,15 @@
 
 -  Wrap `!requireNamespace(pkg, quietly = TRUE)` as this causes hidden bugs to `has_namespace()`
 
+-   `train_nn(verbose = TRUE)` now reports validation loss alongside
+    training loss when `validation_split > 0`, matching `ffnn()` and
+    `rnn()`. The validation branch computed a message but discarded it
+    (a leftover from the `glue::glue()` to `sprintf()` rewrite), so the
+    validation loss never reached the console.
+
+-   `table_summary()` no longer iterates over `1:max(...)`, which
+    produced a descending sequence when the table was empty.
+
 -   `autoplot_diagnostics()` errored on multi-output regression models
     instead of returning one actual-vs-fitted panel per output column.
     The length check comparing `actual` against the fitted values used

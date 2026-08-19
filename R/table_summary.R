@@ -97,7 +97,7 @@ table_summary = function(
 
     if (is_split) {
         left_table = data_matrix[1:l, ]
-        right_table = data_matrix[(l+1):n_rows, ]
+        right_table = data_matrix[(l + 1):n_rows, ]
 
         left_left_width = max(nchar(left_table[, 1]), nchar(col_names[1]))
         left_right_width = max(nchar(left_table[, 2]), nchar(col_names[2]))
@@ -204,7 +204,7 @@ table_summary = function(
             cat(prefix, row_output, "\n", sep = "")
         }
     } else {
-        for (i in 1:max(l, nrow(right_table))) {
+        for (i in seq_len(max(l, nrow(right_table)))) {
             left_row = if (i <= l) left_table[i, ] else c("", "")
             right_row = if (i <= nrow(right_table)) right_table[i, ] else c("", "")
 

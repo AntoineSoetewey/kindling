@@ -211,7 +211,7 @@ brulee_test_metrics =
 # 4. FINAL COMPARISON
 # =========================================================
 
-train_comparison = 
+train_comparison =
     bind_rows(
         kindling_train_metrics |>
             mutate(model = "kindling"),

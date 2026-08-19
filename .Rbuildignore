@@ -16,3 +16,4 @@
 ^paper-.*\.png$
 ^paper\.bib$
 ^paper\.md$
+^\.lintr$

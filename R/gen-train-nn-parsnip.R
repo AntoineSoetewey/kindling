@@ -158,8 +158,7 @@ train_nnsnip =
         device = NULL,
         verbose = NULL,
         cache_weights = NULL
-    )
-    {
+    ) {
 
         if (!requireNamespace("parsnip", quietly = TRUE)) {
             cli::cli_abort("Package {.pkg parsnip} is required but not installed.")
@@ -236,8 +235,7 @@ update.train_nnsnip =
         verbose = NULL,
         fresh = FALSE,
         ...
-    )
-    {
+    ) {
 
         args = list(
             hidden_neurons = rlang::enquo(hidden_neurons),
