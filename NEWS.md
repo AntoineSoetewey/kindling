@@ -21,6 +21,8 @@
 
 -   Added a Life Cycle Statement to `CONTRIBUTING.md`.
 
+-   Package names in `Description` are consistently single-quoted.
+
 -   `?train_nn` gains sections clarifying training/validation/test data
     semantics, the missing-value policy (with a `{recipes}` imputation
     example), and guidance on learning rate, batch size, and epochs.
@@ -57,6 +59,12 @@
     via `purrr::pmap()` instead of relying on `imap()`'s name-or-index behavior.
 
 -  Wrap `!requireNamespace(pkg, quietly = TRUE)` as this causes hidden bugs to `has_namespace()`
+
+-   `layer_prs` (the `.layer`, `.i`, `.in`, `.out`, and `.is_output`
+    pronouns) is documented as a data topic again, with a `@format`
+    description and runnable examples. A roxygen2 8.1.0 re-render had
+    dropped its `\docType{data}` tag, which made documentation checks
+    treat the pronouns as undocumented functions.
 
 -   `train_nn(verbose = TRUE)` now reports validation loss alongside
     training loss when `validation_split > 0`, matching `ffnn()` and

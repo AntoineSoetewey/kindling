@@ -574,6 +574,35 @@ substitute_dot = function(expr, replacement) {
 #' )
 #' ```
 #'
+#' @format Each pronoun is a zero-length object carrying only its class,
+#'   which `layer_arg_fn` formulas resolve to the corresponding per-layer
+#'   value while the module expression is being built. They hold no data of
+#'   their own and are never called directly.
+#'
+#' @examples
+#' # Pronouns stand in for per-layer values inside `layer_arg_fn` formulas.
+#' # `.is_output` distinguishes the final layer from the hidden ones:
+#' gru_arch = nn_arch(
+#'     nn_name = "GRUNet",
+#'     nn_layer = "torch::nn_gru",
+#'     layer_arg_fn = ~ if (.is_output) {
+#'         list(.in, .out)
+#'     } else {
+#'         list(input_size = .in, hidden_size = .out, batch_first = TRUE)
+#'     }
+#' )
+#' gru_arch
+#'
+#' # `.i` is the 1-based layer index; here only the first layer gets a bias.
+#' nn_module_generator(
+#'     nn_name = "TaperedNet",
+#'     hd_neurons = c(16, 8),
+#'     no_x = 4,
+#'     no_y = 1,
+#'     layer_arg_fn = ~ list(.in, .out, bias = .i == 1)
+#' )
+#'
+#' @docType data
 #' @name layer_prs
 #' @aliases .layer .i .in .out .is_output
 NULL
