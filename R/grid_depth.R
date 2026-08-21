@@ -620,16 +620,6 @@ extract_param_range = function(param, levels, original = TRUE) {
     }
 }
 
-extract_param_bounds = function(param) {
-    if (is.null(param)) return(NULL)
-
-    if (param$type %in% c("integer", "double")) {
-        c(param$range$lower, param$range$upper)
-    } else {
-        NULL
-    }
-}
-
 extract_param_values = function(param) {
     if (is.null(param)) return(NULL)
 
