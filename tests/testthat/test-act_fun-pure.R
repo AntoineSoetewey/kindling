@@ -126,7 +126,7 @@ test_that("act_funs() accepts the superseded named = args(...) syntax", {
     expect_equal(unclass(out[[1]])$lambd, 0.5)
 })
 
-test_that("act_funs() accepts named = \"\" as a parameterless named activation", {
+test_that("act_funs() accepts named = '' as a parameterless named activation", {
     skip_if_not_installed("torch")
 
     out = act_funs(relu = "")

@@ -71,11 +71,15 @@ test_that("generate_random_grid samples depth from a vector of n_hlayer values",
 # ---- generate_lhs_grid ----
 
 test_that("generate_lhs_grid produces a design of the requested size", {
+    skip_if_not_installed("lhs")
+
     g = grid_depth(hidden_neurons(c(8L, 64L)), optimizer(), n_hlayer = 1L, type = "latin_hypercube", size = 4)
     expect_equal(nrow(g), 4)
 })
 
 test_that("generate_lhs_grid falls back to random grid when there are no numeric dims", {
+    skip_if_not_installed("lhs")
+
     g = grid_depth(activations(c("relu", "elu")), n_hlayer = 1L, type = "latin_hypercube", size = 3)
     expect_equal(nrow(g), 3)
 })

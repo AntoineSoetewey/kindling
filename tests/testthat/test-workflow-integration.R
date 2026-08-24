@@ -61,7 +61,7 @@ test_that("rnn_kindling works within workflows", {
     expect_s3_class(fitted_wf, "workflow")
 })
 
-test_that("mlp_kindling works within workflows with output_activation = \"linear\"", {
+test_that("mlp_kindling works within workflows with output_activation = 'linear'", {
     skip_if_not_installed("workflows")
     skip_if_not_installed("recipes")
     skip_if_not_installed("parsnip")
@@ -98,7 +98,7 @@ test_that("mlp_kindling works within workflows with output_activation = \"linear
     expect_true(nrow(metrics) > 0)
 })
 
-test_that("rnn_kindling works within workflows with output_activation = \"linear\"", {
+test_that("rnn_kindling works within workflows with output_activation = 'linear'", {
     skip_if_not_installed("workflows")
     skip_if_not_installed("recipes")
     skip_if_not_installed("parsnip")
