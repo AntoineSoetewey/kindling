@@ -208,8 +208,8 @@ Two kinds of [`predict()`](https://rdrr.io/r/stats/predict.html) usage:
     #>             predicted
     #> actual       setosa versicolor virginica
     #>   setosa         50          0         0
-    #>   versicolor      0         47         3
-    #>   virginica       0          3        47
+    #>   versicolor      0         49         1
+    #>   virginica       0          1        49
     ```
 
 2.  **With `newdata`** simply pass the new data frame as the new
@@ -225,7 +225,7 @@ Two kinds of [`predict()`](https://rdrr.io/r/stats/predict.html) usage:
     #> actual       setosa versicolor virginica
     #>   setosa         10          0         0
     #>   versicolor      0          9         1
-    #>   virginica       0          1         9
+    #>   virginica       0          0        10
     ```
 
 ### Level 3: Conventional tidymodels Integration
@@ -379,7 +379,7 @@ best_nn
 # A tibble: 1 × 4
   hidden_neurons activations output_activation .config         
   <list>         <list>      <chr>             <chr>           
-1 <int [2]>      <chr [2]>   sigmoid           pre0_mod08_post0
+1 <int [2]>      <chr [2]>   sigmoid           pre0_mod07_post0
 ```
 
 ``` r
@@ -412,7 +412,7 @@ Model: mlp_kindling()
 -----------------------------------------------------------------------
   NN Model Type           :             FFNN    n_predictors :      4
   Number of Epochs        :              100    n_response   :      3
-  Hidden Layer Units      :           96, 49    reg.         :   None
+  Hidden Layer Units      :           66, 52    reg.         :   None
   Number of Hidden Layers :                2    Device       :    cpu
   Pred. Type              :   classification                 :       
 -----------------------------------------------------------------------
@@ -423,8 +423,8 @@ Model: mlp_kindling()
 ```
 
     ---------------------------------
-      1st Layer {96}    :      relu
-      2nd Layer {49}    :      relu
+      1st Layer {66}    :       elu
+      2nd Layer {52}    :      relu
       Output Activation :   sigmoid
     ---------------------------------
 
@@ -461,10 +461,10 @@ networks. Two primary algorithms are available:
 
     garson(model, bar_plot = FALSE)
     #>        x_names y_names  rel_imp
-    #> 1  Sepal.Width       y 27.84059
-    #> 2 Petal.Length       y 25.51910
-    #> 3  Petal.Width       y 23.93531
-    #> 4 Sepal.Length       y 22.70501
+    #> 1  Petal.Width       y 40.58235
+    #> 2  Sepal.Width       y 21.20501
+    #> 3 Petal.Length       y 19.33506
+    #> 4 Sepal.Length       y 18.87757
     ```
 
 2.  Olden’s Algorithm
@@ -472,11 +472,11 @@ networks. Two primary algorithms are available:
     ``` r
 
     olden(model, bar_plot = FALSE)
-    #>        x_names y_names     rel_imp
-    #> 1  Petal.Width       y  0.08927708
-    #> 2 Petal.Length       y  0.04977165
-    #> 3 Sepal.Length       y  0.04735586
-    #> 4  Sepal.Width       y -0.03704187
+    #>        x_names y_names    rel_imp
+    #> 1  Petal.Width       y -0.2174050
+    #> 2 Sepal.Length       y -0.1798282
+    #> 3 Petal.Length       y -0.1317990
+    #> 4  Sepal.Width       y -0.1050446
     ```
 
 ### Integration with {vip}
