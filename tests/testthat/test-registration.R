@@ -54,5 +54,9 @@ test_that("make_kindling() fully registers all three models with parsnip", {
 })
 
 test_that("make_kindling() takes the early-return guard on a second call", {
+    skip_if_not_installed("parsnip")
+    skip_if_not_installed("dials")
+    skip_if_not_installed("tune")
+
     expect_true(make_kindling())
 })

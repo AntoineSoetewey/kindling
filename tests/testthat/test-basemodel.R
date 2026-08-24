@@ -111,7 +111,7 @@ test_that("Activation functions are properly namespaced", {
     expect_equal(as.character(relu_call[[1]][[3]]), "nnf_relu")
 })
 
-test_that("\"linear\" activation resolves to identity(), not torch::nnf_linear()", {
+test_that("'linear' activation resolves to identity(), not torch::nnf_linear()", {
     skip_if_no_torch()
 
     # Regression test for https://github.com/joshuamarie/kindling/issues/21 :
@@ -129,7 +129,7 @@ test_that("\"linear\" activation resolves to identity(), not torch::nnf_linear()
     expect_false(grepl("nnf_linear", deparse(linear_call)))
 })
 
-test_that("output_activation = \"linear\" trains without error and behaves as identity", {
+test_that("output_activation = 'linear' trains without error and behaves as identity", {
     skip_if_no_torch()
 
     set.seed(1)
