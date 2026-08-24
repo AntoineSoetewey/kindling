@@ -593,6 +593,14 @@ extract_param_range = function(param, levels, original = TRUE) {
         lower = param$range$lower
         upper = param$range$upper
 
+        if (is.null(lower) || is.null(upper) || !is.finite(lower) || !is.finite(upper)) {
+            param_name = names(param$label) %||% param$label %||% "parameter"
+            cli::cli_abort(c(
+                "{.field {param_name}} has an unknown or non-finite range.",
+                "i" = "Finalize its range (e.g. with {.fn dials::finalize}) before generating a grid."
+            ))
+        }
+
         has_trans = !is.null(param$trans)
 
         if (!is.null(levels)) {

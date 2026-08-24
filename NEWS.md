@@ -82,6 +82,12 @@
     `nrow()` (the observation count), so the mismatch check always
     failed before reaching the multi-output branch.
 
+-   `grid_depth()` no longer crashes with a cryptic `'from' must be a
+    finite number` error from `seq()` when given an unfinalized `{dials}`
+    parameter (e.g. `hidden_neurons()` before `finalize()`, whose range
+    bounds are `NA`). It now raises an informative error asking for the
+    range to be finalized first.
+
 # kindling 0.3.2
 
 ## Bug fixes
