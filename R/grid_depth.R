@@ -295,6 +295,7 @@ grid_depth.default =
 #'
 #' @return List with `values` component containing integer vector of depths
 #' @keywords internal
+#' @noRd
 extract_depth_param = function(n_hlayer, param_list = list(), levels = 3L) {
     if ("n_hlayers" %in% names(param_list)) {
         depth_param = param_list[["n_hlayers"]]
@@ -839,6 +840,7 @@ decode_scalars = function(scalar_params, design_vals, original = TRUE) {
 #' @param size Number of samples
 #' @param replace Sample with replacement?
 #' @keywords internal
+#' @noRd
 safe_sample = function(x, size, replace = FALSE) {
     if (length(x) == 1) {
         rep(x, size)

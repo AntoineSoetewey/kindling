@@ -168,7 +168,7 @@ parse_activation_string = function(act_str) {
     }
 
     # Check if it has parameters (contains parentheses)
-    if (!grepl("\\(", act_str)) {
+    if (!grepl("(", act_str, fixed = TRUE)) {
         return(list(name = act_str, params = list()))
     }
 
@@ -243,9 +243,8 @@ validate_activation = function(act_name, prefix = "nnf_") {
 
 #' Validate Arguments Match Function Formals
 #'
-#' @param act_name Character. Activation function name (without prefix).
+#' @inheritParams validate_activation
 #' @param params List. Parameters to validate.
-#' @param prefix Character. Prefix for the function name (default: "nnf_").
 #'
 #' @importFrom cli cli_abort
 #'
@@ -255,13 +254,13 @@ validate_args_formals = function(act_name, params, prefix = "nnf_") {
         # "linear" (identity) takes no parameters.
         fn_formals = character(0)
         fn_name = "linear"
-    } else if (!has_namespace("torch")) {
-        return(invisible(NULL))
-    } else {
+    } else if (has_namespace("torch")) {
         fn_name = paste0(prefix, act_name)
         fn = get(fn_name, envir = asNamespace("torch"))
         fn_formals = names(formals(fn))
         fn_formals = fn_formals[!fn_formals %in% c("input", "x", "...")]
+    } else {
+        return(invisible(NULL))
     }
 
     param_names = names(params)
@@ -271,7 +270,7 @@ validate_args_formals = function(act_name, params, prefix = "nnf_") {
         invalid_params = setdiff(named_params, fn_formals)
 
         if (length(invalid_params) > 0) {
-            valid_params_str = paste(fn_formals, collapse = ", ")
+            valid_params_str = toString(fn_formals)
             cli_abort(c(
                 "{cli::qty(invalid_params)}Invalid parameter{?s} for {.fn {fn_name}}: {.arg {invalid_params}}.",
                 i = "Valid parameters are: {.code {valid_params_str}}."
@@ -486,6 +485,7 @@ process_activations = function(activation_spec, prefix = "nnf_") {
 #'
 #' @importFrom rlang enquo quo_is_null eval_tidy
 #' @keywords internal
+#' @noRd
 eval_act_funs = function(activations, output_activation) {
     activations_quo = enquo(activations)
     output_activation_quo = enquo(output_activation)
@@ -495,16 +495,16 @@ eval_act_funs = function(activations, output_activation) {
         args = args
     )
 
-    activations = if (!quo_is_null(activations_quo)) {
-        eval_tidy(activations_quo, data = env_mask)
-    } else {
+    activations = if (quo_is_null(activations_quo)) {
         NULL
+    } else {
+        eval_tidy(activations_quo, data = env_mask)
     }
 
-    output_activation = if (!quo_is_null(output_activation_quo)) {
-        eval_tidy(output_activation_quo, data = env_mask)
-    } else {
+    output_activation = if (quo_is_null(output_activation_quo)) {
         NULL
+    } else {
+        eval_tidy(output_activation_quo, data = env_mask)
     }
 
     list(

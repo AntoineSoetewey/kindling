@@ -11,6 +11,14 @@ linters: linters_with_defaults(
     indentation_linter = NULL,
     # Assignment uses `=` rather than `<-` package-wide.
     assignment_linter = assignment_linter(operator = "="),
+    # `cli_abort()`/`cli_bullets()` build bullet lists as
+    # c(i = "...", i = "...", ...); repeated names in c() are harmless
+    # (every element survives, unlike repeated named args to a function
+    # call), so `c()` is excepted alongside the linter's own defaults
+    # (`mutate`/`transmute`) for the same reason.
+    duplicate_argument_linter = duplicate_argument_linter(
+      except = c("mutate", "transmute", "c")
+    ),
     # 80 is too tight for cli message strings; 120 is the working limit.
     line_length_linter = line_length_linter(120L),
     # Explicit `return()` is used deliberately for early exits and at the

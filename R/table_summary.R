@@ -191,19 +191,7 @@ table_summary = function(
         cat(prefix, styled_horizontal_line, "\n", sep = "")
     }
 
-    if (!is_split) {
-        for (i in 1:n_rows) {
-            row_output = format_row_summary(
-                data_matrix[i, 1],
-                data_matrix[i, 2],
-                left_width,
-                right_width,
-                align = align,
-                style = style
-            )
-            cat(prefix, row_output, "\n", sep = "")
-        }
-    } else {
+    if (is_split) {
         for (i in seq_len(max(l, nrow(right_table)))) {
             left_row = if (i <= l) left_table[i, ] else c("", "")
             right_row = if (i <= nrow(right_table)) right_table[i, ] else c("", "")
@@ -227,6 +215,18 @@ table_summary = function(
             )
 
             row_output = paste0(left_output, "  ", right_output)
+            cat(prefix, row_output, "\n", sep = "")
+        }
+    } else {
+        for (i in 1:n_rows) {
+            row_output = format_row_summary(
+                data_matrix[i, 1],
+                data_matrix[i, 2],
+                left_width,
+                right_width,
+                align = align,
+                style = style
+            )
             cat(prefix, row_output, "\n", sep = "")
         }
     }

@@ -116,7 +116,7 @@ check_predictor_matrix = function(x) {
             i = "Impute them (e.g. {.fn recipes::step_impute_mean}) or drop incomplete rows (e.g. {.fn tidyr::drop_na}) before fitting."
         ), class = "kindling_input_error")
     }
-    if (any(!is.finite(x))) {
+    if (!all(is.finite(x))) {
         cli::cli_abort(
             "{.arg x} contains non-finite values ({.val NaN}, {.val Inf}): clean these before fitting.",
             class = "kindling_input_error"
@@ -141,7 +141,7 @@ check_outcome = function(y, n_obs) {
             i = "Impute or drop incomplete observations before fitting."
         ), class = "kindling_input_error")
     }
-    if (is.numeric(y) && any(!is.finite(y))) {
+    if (is.numeric(y) && !all(is.finite(y))) {
         cli::cli_abort(
             "{.arg y} contains non-finite values ({.val NaN}, {.val Inf}): clean these before fitting.",
             class = "kindling_input_error"
@@ -163,7 +163,7 @@ check_newdata_matrix = function(newdata) {
             i = "Supply the same predictor columns used during training."
         ), class = "kindling_input_error")
     }
-    if (anyNA(newdata) || any(!is.finite(newdata))) {
+    if (anyNA(newdata) || !all(is.finite(newdata))) {
         cli::cli_abort(
             "{.arg newdata} contains missing or non-finite values: kindling models cannot predict on them.",
             class = "kindling_input_error"

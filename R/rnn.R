@@ -137,6 +137,7 @@ rnn =
 
 #' RNN Implementation
 #' @keywords internal
+#' @noRd
 rnn_impl =
     function(
         x,

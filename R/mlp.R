@@ -152,6 +152,7 @@ ffnn =
 
 #' FFNN Implementation
 #' @keywords internal
+#' @noRd
 ffnn_impl =
     function(
         x,

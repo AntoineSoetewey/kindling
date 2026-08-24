@@ -211,21 +211,13 @@ brulee_test_metrics =
 # 4. FINAL COMPARISON
 # =========================================================
 
-train_comparison =
-    bind_rows(
-        kindling_train_metrics |>
-            mutate(model = "kindling"),
-        brulee_train_metrics |>
-            mutate(model = "brulee")
-    )
+kindling_train_labeled = kindling_train_metrics |> mutate(model = "kindling")
+brulee_train_labeled = brulee_train_metrics |> mutate(model = "brulee")
+train_comparison = bind_rows(kindling_train_labeled, brulee_train_labeled)
 
-test_comparison =
-    bind_rows(
-        kindling_test_metrics |>
-            mutate(model = "kindling"),
-        brulee_test_metrics |>
-            mutate(model = "brulee")
-    )
+kindling_test_labeled = kindling_test_metrics |> mutate(model = "kindling")
+brulee_test_labeled = brulee_test_metrics |> mutate(model = "brulee")
+test_comparison = bind_rows(kindling_test_labeled, brulee_test_labeled)
 
 train_comparison
 test_comparison

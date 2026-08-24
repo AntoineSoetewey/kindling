@@ -453,6 +453,7 @@ nn_module_generator =
 #'
 #' @return A function
 #' @keywords internal
+#' @noRd
 formula_to_function = function(formula_or_fn, default_fn = NULL, arg_names = NULL, alias_map = NULL) {
     if (is.null(formula_or_fn)) {
         return(default_fn)
@@ -494,6 +495,7 @@ formula_to_function = function(formula_or_fn, default_fn = NULL, arg_names = NUL
 #'
 #' @return A function that takes an expression and returns a transformed expression, or NULL
 #' @keywords internal
+#' @noRd
 formula_to_expr_transformer = function(formula_or_fn) {
     if (is.null(formula_or_fn)) {
         return(NULL)
@@ -522,13 +524,14 @@ formula_to_expr_transformer = function(formula_or_fn) {
 #'
 #' @return Modified expression
 #' @keywords internal
+#' @noRd
 substitute_dot = function(expr, replacement) {
     if (is.symbol(expr) && identical(expr, quote(.))) {
         return(replacement)
     }
 
     if (is.call(expr)) {
-        expr[] = lapply(expr, function(e) substitute_dot(e, replacement))
+        expr[] = lapply(expr, substitute_dot, replacement)
         return(expr)
     }
 
@@ -681,7 +684,7 @@ NULL
 
 #' Print method for the pronouns
 #'
-#' @param x An object of class "ffnn_fit"
+#' @param x A layer pronoun object (`.layer`, `.i`, `.in`, `.out`, or `.is_output`)
 #' @param ... Additional arguments (unused)
 #'
 #' @return No return value, prints out the type of pronoun to be used

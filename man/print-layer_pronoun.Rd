@@ -19,7 +19,7 @@
 \method{print}{layer_is_output_pr}(x, ...)
 }
 \arguments{
-\item{x}{An object of class "ffnn_fit"}
+\item{x}{A layer pronoun object (\code{.layer}, \code{.i}, \code{.in}, \code{.out}, or \code{.is_output})}
 
 \item{...}{Additional arguments (unused)}
 }
