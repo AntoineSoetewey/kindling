@@ -225,7 +225,7 @@ Two kinds of [`predict()`](https://rdrr.io/r/stats/predict.html) usage:
     #> actual       setosa versicolor virginica
     #>   setosa         10          0         0
     #>   versicolor      0          8         2
-    #>   virginica       0          1         9
+    #>   virginica       0          0        10
     ```
 
 ### Level 3: Conventional tidymodels Integration
@@ -379,7 +379,7 @@ best_nn
 # A tibble: 1 × 4
   hidden_neurons activations output_activation .config         
   <list>         <list>      <chr>             <chr>           
-1 <int [2]>      <chr [2]>   sigmoid           pre0_mod03_post0
+1 <int [2]>      <chr [2]>   sigmoid           pre0_mod02_post0
 ```
 
 ``` r
@@ -412,7 +412,7 @@ Model: mlp_kindling()
 -----------------------------------------------------------------------
   NN Model Type           :             FFNN    n_predictors :      4
   Number of Epochs        :              100    n_response   :      3
-  Hidden Layer Units      :           41, 94    reg.         :   None
+  Hidden Layer Units      :          50, 101    reg.         :   None
   Number of Hidden Layers :                2    Device       :    cpu
   Pred. Type              :   classification                 :       
 -----------------------------------------------------------------------
@@ -423,8 +423,8 @@ Model: mlp_kindling()
 ```
 
     ---------------------------------
-      1st Layer {41}    :       elu
-      2nd Layer {94}    :      relu
+      1st Layer {50}    :       elu
+      2nd Layer {101}   :       elu
       Output Activation :   sigmoid
     ---------------------------------
 
@@ -461,10 +461,10 @@ networks. Two primary algorithms are available:
 
     garson(model, bar_plot = FALSE)
     #>        x_names y_names  rel_imp
-    #> 1 Petal.Length       y 30.44184
-    #> 2  Petal.Width       y 25.73609
-    #> 3  Sepal.Width       y 23.33025
-    #> 4 Sepal.Length       y 20.49181
+    #> 1  Petal.Width       y 34.82443
+    #> 2 Petal.Length       y 26.46901
+    #> 3 Sepal.Length       y 22.93351
+    #> 4  Sepal.Width       y 15.77305
     ```
 
 2.  Olden’s Algorithm
@@ -473,10 +473,10 @@ networks. Two primary algorithms are available:
 
     olden(model, bar_plot = FALSE)
     #>        x_names y_names    rel_imp
-    #> 1 Petal.Length       y -1.1740514
-    #> 2  Petal.Width       y -0.6683236
-    #> 3 Sepal.Length       y  0.6380333
-    #> 4  Sepal.Width       y  0.5067770
+    #> 1  Petal.Width       y  0.3449203
+    #> 2  Sepal.Width       y -0.2037553
+    #> 3 Petal.Length       y  0.2004643
+    #> 4 Sepal.Length       y -0.1406104
     ```
 
 ### Integration with {vip}

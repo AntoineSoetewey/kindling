@@ -620,7 +620,7 @@ if (torch::torch_is_installed()) {
     # torch dataset method — labels come from the dataset itself
     iris_cls_dataset = torch::dataset(
         name = "iris_cls_dataset",
-        
+
         initialize = function(data = iris) {
             self$x = torch::torch_tensor(
                 as.matrix(data[, 1:4]),
@@ -632,16 +632,16 @@ if (torch::torch_is_installed()) {
                 dtype = torch::torch_long()
             )
         },
-        
+
         .getitem = function(i) {
             list(self$x[i, ], self$y[i])
         },
-        
+
         .length = function() {
             self$x$size(1)
         }
     )()
-    
+
     model_nn_ds = train_nn(
         x = iris_cls_dataset,
         hidden_neurons = c(32, 10),
@@ -653,29 +653,29 @@ if (torch::torch_is_installed()) {
         validation_split = 0.2,
         verbose = TRUE
     )
-    
+
     pred_nn = predict(model_nn_ds, iris_cls_dataset)
     class_preds = c("Setosa", "Versicolor", "Virginica")[predict(model_nn_ds, iris_cls_dataset)]
-    
+
     # Confusion Matrix
     table(actual = iris$Species, pred = class_preds)
 }
 #> → Auto-detected classification task. Using cross_entropy loss.
 #> ℹ Using device: cpu
-#> Epoch 8/80 - Loss: 0.2566 - Val Loss: 0.2438
-#> Epoch 16/80 - Loss: 0.1041 - Val Loss: 0.0674
-#> Epoch 24/80 - Loss: 0.1066 - Val Loss: 0.0466
-#> Epoch 32/80 - Loss: 0.0940 - Val Loss: 0.0702
-#> Epoch 40/80 - Loss: 0.1210 - Val Loss: 0.0507
-#> Epoch 48/80 - Loss: 0.0651 - Val Loss: 0.0749
-#> Epoch 56/80 - Loss: 0.0555 - Val Loss: 0.0523
-#> Epoch 64/80 - Loss: 0.0763 - Val Loss: 0.0299
-#> Epoch 72/80 - Loss: 0.0749 - Val Loss: 0.0183
-#> Epoch 80/80 - Loss: 0.0770 - Val Loss: 0.0336
+#> Epoch 8/80 - Loss: 0.2504 - Val Loss: 0.1557
+#> Epoch 16/80 - Loss: 0.1255 - Val Loss: 0.1077
+#> Epoch 24/80 - Loss: 0.0640 - Val Loss: 0.0931
+#> Epoch 32/80 - Loss: 0.0778 - Val Loss: 0.0907
+#> Epoch 40/80 - Loss: 0.0632 - Val Loss: 0.0911
+#> Epoch 48/80 - Loss: 0.0618 - Val Loss: 0.1125
+#> Epoch 56/80 - Loss: 0.0690 - Val Loss: 0.0980
+#> Epoch 64/80 - Loss: 0.0649 - Val Loss: 0.1037
+#> Epoch 72/80 - Loss: 0.0558 - Val Loss: 0.0993
+#> Epoch 80/80 - Loss: 0.1163 - Val Loss: 0.1273
 #>             pred
 #> actual       Setosa Versicolor Virginica
 #>   setosa         50          0         0
-#>   versicolor      0         47         3
-#>   virginica       0          0        50
+#>   versicolor      0         48         2
+#>   virginica       0          2        48
 # }
 ```

@@ -626,7 +626,7 @@ is automatically switched to <code>"cross_entropy"</code> in that case.</p>
 <span class="r-in"><span>    <span class="co"># torch dataset method — labels come from the dataset itself</span></span></span>
 <span class="r-in"><span>    <span class="va">iris_cls_dataset</span> <span class="op">=</span> <span class="fu">torch</span><span class="fu">::</span><span class="fu"><a href="https://torch.mlverse.org/docs/reference/dataset.html" class="external-link">dataset</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>        name <span class="op">=</span> <span class="st">"iris_cls_dataset"</span>,</span></span>
-<span class="r-in"><span>        </span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span>        initialize <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span> <span class="op">=</span> <span class="va">iris</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>            <span class="va">self</span><span class="op">$</span><span class="va">x</span> <span class="op">=</span> <span class="fu">torch</span><span class="fu">::</span><span class="fu"><a href="https://torch.mlverse.org/docs/reference/torch_tensor.html" class="external-link">torch_tensor</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>                <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">data</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span><span class="op">)</span>,</span></span>
@@ -638,16 +638,16 @@ is automatically switched to <code>"cross_entropy"</code> in that case.</p>
 <span class="r-in"><span>                dtype <span class="op">=</span> <span class="fu">torch</span><span class="fu">::</span><span class="fu"><a href="https://torch.mlverse.org/docs/reference/torch_dtype.html" class="external-link">torch_long</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span>            <span class="op">)</span></span></span>
 <span class="r-in"><span>        <span class="op">}</span>,</span></span>
-<span class="r-in"><span>        </span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span>        .getitem <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>            <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">self</span><span class="op">$</span><span class="va">x</span><span class="op">[</span><span class="va">i</span>, <span class="op">]</span>, <span class="va">self</span><span class="op">$</span><span class="va">y</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-in"><span>        <span class="op">}</span>,</span></span>
-<span class="r-in"><span>        </span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span>        .length <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>            <span class="va">self</span><span class="op">$</span><span class="va">x</span><span class="op">$</span><span class="fu">size</span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span>        <span class="op">}</span></span></span>
 <span class="r-in"><span>    <span class="op">)</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-in"><span>    </span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span>    <span class="va">model_nn_ds</span> <span class="op">=</span> <span class="fu">train_nn</span><span class="op">(</span></span></span>
 <span class="r-in"><span>        x <span class="op">=</span> <span class="va">iris_cls_dataset</span>,</span></span>
 <span class="r-in"><span>        hidden_neurons <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">32</span>, <span class="fl">10</span><span class="op">)</span>,</span></span>
@@ -659,30 +659,30 @@ is automatically switched to <code>"cross_entropy"</code> in that case.</p>
 <span class="r-in"><span>        validation_split <span class="op">=</span> <span class="fl">0.2</span>,</span></span>
 <span class="r-in"><span>        verbose <span class="op">=</span> <span class="cn">TRUE</span></span></span>
 <span class="r-in"><span>    <span class="op">)</span></span></span>
-<span class="r-in"><span>    </span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span>    <span class="va">pred_nn</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">model_nn_ds</span>, <span class="va">iris_cls_dataset</span><span class="op">)</span></span></span>
 <span class="r-in"><span>    <span class="va">class_preds</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Setosa"</span>, <span class="st">"Versicolor"</span>, <span class="st">"Virginica"</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">model_nn_ds</span>, <span class="va">iris_cls_dataset</span><span class="op">)</span><span class="op">]</span></span></span>
-<span class="r-in"><span>    </span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span>    <span class="co"># Confusion Matrix</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span>actual <span class="op">=</span> <span class="va">iris</span><span class="op">$</span><span class="va">Species</span>, pred <span class="op">=</span> <span class="va">class_preds</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> → Auto-detected classification task. Using cross_entropy loss.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Using device: cpu</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Epoch 8/80 - Loss: 0.2566 - Val Loss: 0.2438</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Epoch 16/80 - Loss: 0.1041 - Val Loss: 0.0674</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Epoch 24/80 - Loss: 0.1066 - Val Loss: 0.0466</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Epoch 32/80 - Loss: 0.0940 - Val Loss: 0.0702</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Epoch 40/80 - Loss: 0.1210 - Val Loss: 0.0507</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Epoch 48/80 - Loss: 0.0651 - Val Loss: 0.0749</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Epoch 56/80 - Loss: 0.0555 - Val Loss: 0.0523</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Epoch 64/80 - Loss: 0.0763 - Val Loss: 0.0299</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Epoch 72/80 - Loss: 0.0749 - Val Loss: 0.0183</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Epoch 80/80 - Loss: 0.0770 - Val Loss: 0.0336</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Epoch 8/80 - Loss: 0.2504 - Val Loss: 0.1557</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Epoch 16/80 - Loss: 0.1255 - Val Loss: 0.1077</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Epoch 24/80 - Loss: 0.0640 - Val Loss: 0.0931</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Epoch 32/80 - Loss: 0.0778 - Val Loss: 0.0907</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Epoch 40/80 - Loss: 0.0632 - Val Loss: 0.0911</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Epoch 48/80 - Loss: 0.0618 - Val Loss: 0.1125</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Epoch 56/80 - Loss: 0.0690 - Val Loss: 0.0980</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Epoch 64/80 - Loss: 0.0649 - Val Loss: 0.1037</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Epoch 72/80 - Loss: 0.0558 - Val Loss: 0.0993</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Epoch 80/80 - Loss: 0.1163 - Val Loss: 0.1273</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             pred</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> actual       Setosa Versicolor Virginica</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   setosa         50          0         0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   versicolor      0         47         3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   virginica       0          0        50</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   versicolor      0         48         2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   virginica       0          2        48</span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

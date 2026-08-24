@@ -123,12 +123,12 @@ if (torch::torch_is_installed()) {
         verbose = FALSE,
         cache_weights = TRUE
     )
-    
+
     # Directly use `NeuralNetTools::garson`
     model_mlp |>
         garson()
-    
-    # Directly use `NeuralNetTools::olden`    
+
+    # Directly use `NeuralNetTools::olden`
     model_mlp |>
         olden()
 } else {
@@ -136,10 +136,10 @@ if (torch::torch_is_installed()) {
 }
 
 #>        x_names y_names    rel_imp
-#> 1 Petal.Length       y -0.2021507
-#> 2  Sepal.Width       y  0.1904573
-#> 3 Sepal.Length       y  0.1855333
-#> 4  Petal.Width       y -0.1424159
+#> 1  Petal.Width       y -0.5340666
+#> 2 Petal.Length       y -0.4736115
+#> 3  Sepal.Width       y  0.3394937
+#> 4 Sepal.Length       y  0.1464207
 # }
 
 # \donttest{

@@ -34,6 +34,8 @@
 
 - Added a Life Cycle Statement to `CONTRIBUTING.md`.
 
+- Package names in `Description` are consistently single-quoted.
+
 - [`?train_nn`](https://kindling.joshuamarie.com/dev/reference/gen-nn-train.md)
   gains sections clarifying training/validation/test data semantics, the
   missing-value policy (with a
@@ -89,6 +91,27 @@
 
 - Wrap `!requireNamespace(pkg, quietly = TRUE)` as this causes hidden
   bugs to `has_namespace()`
+
+- `layer_prs` (the `.layer`, `.i`, `.in`, `.out`, and `.is_output`
+  pronouns) is documented as a data topic again, with a `@format`
+  description and runnable examples. A roxygen2 8.1.0 re-render had
+  dropped its `\docType{data}` tag, which made documentation checks
+  treat the pronouns as undocumented functions.
+
+- `train_nn(verbose = TRUE)` now reports validation loss alongside
+  training loss when `validation_split > 0`, matching
+  [`ffnn()`](https://kindling.joshuamarie.com/dev/reference/kindling-basemodels.md)
+  and
+  [`rnn()`](https://kindling.joshuamarie.com/dev/reference/kindling-basemodels.md).
+  The validation branch computed a message but discarded it (a leftover
+  from the
+  [`glue::glue()`](https://glue.tidyverse.org/reference/glue.html) to
+  [`sprintf()`](https://rdrr.io/r/base/sprintf.html) rewrite), so the
+  validation loss never reached the console.
+
+- [`table_summary()`](https://kindling.joshuamarie.com/dev/reference/table_summary.md)
+  no longer iterates over `1:max(...)`, which produced a descending
+  sequence when the table was empty.
 
 - [`autoplot_diagnostics()`](https://kindling.joshuamarie.com/dev/reference/autoplot_diagnostics.md)
   errored on multi-output regression models instead of returning one
