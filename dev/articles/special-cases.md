@@ -144,8 +144,8 @@ tibble(
     ## # A tibble: 2 × 3
     ##   .metric .estimator .estimate
     ##   <chr>   <chr>          <dbl>
-    ## 1 rmse    standard       4.43 
-    ## 2 rsq     standard       0.945
+    ## 1 rmse    standard       4.62 
+    ## 2 rsq     standard       0.911
 
 ### Comparison with `lm()`
 
