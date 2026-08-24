@@ -5,6 +5,7 @@
 #' with parsnip. It should be called when the package is loaded.
 #'
 #' @keywords internal
+#' @noRd
 make_kindling = function() {
     rlang::check_installed(
         c("parsnip", "dials", "tune"),

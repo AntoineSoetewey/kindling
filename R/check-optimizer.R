@@ -1,6 +1,6 @@
 #' Validate Optimizer Exists
 #'
-#' @param act_name Character. Activation function name (without prefix).
+#' @param optimizer Character. Optimizer name (without prefix).
 #'
 #' @importFrom cli cli_abort
 #' @importFrom rlang is_installed

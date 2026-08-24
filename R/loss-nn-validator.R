@@ -1,4 +1,5 @@
 #' @keywords internal
+#' @noRd
 .validate_loss_fn = function(fn) {
     # ---- Arity check ----
     if (length(formals(fn)) < 2L) {

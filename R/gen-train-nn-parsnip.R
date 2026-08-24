@@ -8,50 +8,14 @@
 #' and uses [train_nn()] as the fitting backend, supporting any architecture
 #' expressible via [nn_arch()] — feedforward, recurrent, convolutional, and beyond.
 #'
-#' @param mode A single character string for the type of model. Possible values
-#'   are "unknown", "regression", or "classification".
-#' @param engine A single character string specifying what computational engine
-#'   to use for fitting. Currently only "kindling" is supported.
-#' @param hidden_neurons An integer vector for the number of units in each hidden
-#'   layer. Can be tuned.
-#' @param activations A character vector of activation function names for each
-#'   hidden layer (e.g., "relu", "tanh", "sigmoid"). Can be tuned.
-#' @param output_activation A character string for the output activation function.
-#'   Can be tuned.
-#' @param bias Logical for whether to include bias terms. Can be tuned.
-#' @param epochs An integer for the number of training iterations. Can be tuned.
-#' @param penalty A number for the regularization penalty (lambda). Default `0`
-#'   (no regularization). Higher values increase regularization strength. Can be tuned.
-#' @param mixture A number between 0 and 1 for the elastic net mixing parameter.
-#'   Default `0` (pure L2/Ridge regularization).
-#'   - `0`: Pure L2 regularization (Ridge)
-#'   - `1`: Pure L1 regularization (Lasso)
-#'   - `0 < mixture < 1`: Elastic net (combination of L1 and L2)
-#'   Only relevant when `penalty > 0`. Can be tuned.
-#' @param batch_size An integer for the batch size during training. Can be tuned.
-#' @param learn_rate A number for the learning rate. Can be tuned.
-#' @param optimizer A character string for the optimizer type ("adam", "sgd",
-#'   "rmsprop"). Can be tuned.
-#' @param validation_split A number between 0 and 1 for the proportion of data
-#'   used for validation. Can be tuned.
-#'
-#' @param optimizer_args A named list of additional arguments passed to the
-#'   optimizer. Cannot be tuned — pass via `set_engine()`.
+#' @inheritParams mlp_kindling
 #' @param loss A character string or a valid `{torch}` function for the loss function ("mse", "mae",
 #'   "cross_entropy", "bce"). Cannot be tuned — pass via `set_engine()`.
-#' @param architecture An [nn_arch()] object for a custom architecture. Cannot
-#'   be tuned — pass via `set_engine()`.
-#' @param flatten_input Logical or `NULL`. Controls input flattening. Cannot be
-#'   tuned — pass via `set_engine()`.
-#' @param early_stopping An [early_stop()] object or `NULL`. Cannot be tuned —
-#'   pass via `set_engine()`.
 #' @param device A character string for the device to use ("cpu", "cuda", "mps").
 #'   If `NULL`, auto-detects the best available device. Cannot be tuned — pass
 #'   via `set_engine()`.
 #' @param verbose Logical for whether to print training progress. Default `FALSE`.
 #'   Cannot be tuned — pass via `set_engine()`.
-#' @param cache_weights Logical. If `TRUE`, stores trained weight matrices in
-#'   the returned object. Cannot be tuned — pass via `set_engine()`.
 #'
 #' @details
 #' This function creates a model specification for a neural network that can be

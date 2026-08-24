@@ -240,6 +240,7 @@ train_nn.dataset =
 
 #' train_nn implementation for torch datasets
 #' @keywords internal
+#' @noRd
 train_nn_impl_dataset =
     function(
         dataset,

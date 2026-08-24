@@ -10,6 +10,7 @@
 #'   are permitted; anything else errors informatively.
 #' @srrstats {G2.3b} `tolower()` makes the device argument case-insensitive.
 #' @keywords internal
+#' @noRd
 validate_device = function(device) {
     device = tolower(device)
 

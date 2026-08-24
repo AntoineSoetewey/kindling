@@ -1,5 +1,6 @@
 #' Prepare arguments for kindling models
 #' @keywords internal
+#' @noRd
 prepare_kindling_args = function(args) {
     args = lapply(args, function(val) {
         if (rlang::is_quosure(val)) {

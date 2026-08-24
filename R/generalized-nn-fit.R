@@ -599,6 +599,7 @@ train_nn.default = function(x, ...) {
 
 #' Preprocessing bridge for data.frame and formula methods
 #' @keywords internal
+#' @noRd
 .train_nn_tab_impl =
     function(
         processed,
@@ -723,6 +724,7 @@ train_nn.default = function(x, ...) {
 #'   `"bce"`, plus arbitrary user-supplied loss functions or lambdas
 #'   (validated by `.validate_loss_fn()`).
 #' @keywords internal
+#' @noRd
 train_nn_impl =
     function(
         x,
@@ -920,7 +922,7 @@ train_nn_impl =
                 dtype = if (is_y && is_classification) torch::torch_long()
                 else torch::torch_float32()
             )
-            if (!is_y) input_fn(t) else t
+            if (is_y) t else input_fn(t)
         }
 
         x_train_t = .make_tensor(x_train)
