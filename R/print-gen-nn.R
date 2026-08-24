@@ -19,13 +19,13 @@ print.nn_fit = function(x, ...) {
     hidden_units_str = if (is.null(x$hidden_neurons)) {
         "Not specified"
     } else {
-        paste(as.character(x$hidden_neurons), collapse = ", ")
+        toString(x$hidden_neurons)
     }
 
     nn_model_type = if (!is.null(x$arch)) {
         nn_layer = x$arch$nn_layer %||% "nn_linear"
         if (inherits(nn_layer, "formula")) {
-            nn_layer = paste(deparse(nn_layer), collapse = " ")
+            nn_layer = deparse1(nn_layer)
         }
         sprintf("%s (%s)", x$arch$nn_name, nn_layer)
     } else {
@@ -99,9 +99,9 @@ print.nn_fit = function(x, ...) {
     flag = function(val) if (!is.null(val)) "yes" else "N/A"
     arch_str = function(val, default = "N/A") {
         if (is.null(val)) return(default)
-        if (inherits(val, "formula")) return(paste(deparse(val), collapse = " "))
+        if (inherits(val, "formula")) return(deparse1(val))
         if (is.function(val) || is.list(val)) return("yes")
-        paste(as.character(val), collapse = ", ")
+        toString(val)
     }
     arch = x$arch
     arch_data = data.frame(

@@ -1,4 +1,5 @@
 #' @importFrom cli rule style_bold cat_line style_italic
+#' @noRd
 
 concat = function(x) {
     if (is.null(x)) return("No act function applied")
@@ -90,7 +91,7 @@ print.ffnn_fit = function(x, ...) {
     hidden_units_str = if (is.null(x$hidden_neurons)) {
         "Not specified"
     } else {
-        paste(as.character(x$hidden_neurons), collapse = ", ")
+        toString(x$hidden_neurons)
     }
 
     summary_data = data.frame(
@@ -194,7 +195,7 @@ print.rnn_fit = function(x, ...) {
     hidden_units_str = if (is.null(x$hidden_neurons)) {
         "Not specified"
     } else {
-        paste(as.character(x$hidden_neurons), collapse = ", ")
+        toString(x$hidden_neurons)
     }
 
     summary_data = data.frame(

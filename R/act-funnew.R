@@ -46,12 +46,7 @@ new_act_fn = function(fn, probe = TRUE, .name = "<custom>") {
 
     # ---- Dry-run probe at definition time ----
     if (probe) {
-        if (!requireNamespace("torch", quietly = TRUE)) {
-            cli::cli_warn(c(
-                "{.pkg torch} is not installed; skipping dry-run probe for {.fn new_act_fn}.",
-                i = "Type safety will only be enforced at call time."
-            ))
-        } else {
+        if (requireNamespace("torch", quietly = TRUE)) {
             # Prepare a tiny 1-D tensor to validate
             dummy = torch::torch_zeros(2L)
             out = torch::with_no_grad(
@@ -67,6 +62,11 @@ new_act_fn = function(fn, probe = TRUE, .name = "<custom>") {
                 )
             )
             .assert_tensor_output(out, context = "Dry-run")
+        } else {
+            cli::cli_warn(c(
+                "{.pkg torch} is not installed; skipping dry-run probe for {.fn new_act_fn}.",
+                i = "Type safety will only be enforced at call time."
+            ))
         }
     }
 
