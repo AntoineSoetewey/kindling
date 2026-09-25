@@ -105,5 +105,5 @@ nn_module_generator(
 #>           x = self$out(x)
 #>           x
 #>         }>)
-#> env:  0x55c769994318
+#> env:  0x561a094d1c78
 ```
