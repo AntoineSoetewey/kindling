@@ -209,7 +209,7 @@ Two kinds of [`predict()`](https://rdrr.io/r/stats/predict.html) usage:
     #> actual       setosa versicolor virginica
     #>   setosa         50          0         0
     #>   versicolor      0         48         2
-    #>   virginica       0          0        50
+    #>   virginica       0          2        48
     ```
 
 2.  **With `newdata`** simply pass the new data frame as the new
@@ -461,10 +461,10 @@ networks. Two primary algorithms are available:
 
     garson(model, bar_plot = FALSE)
     #>        x_names y_names  rel_imp
-    #> 1 Petal.Length       y 35.38786
-    #> 2  Petal.Width       y 25.74123
-    #> 3 Sepal.Length       y 19.95034
-    #> 4  Sepal.Width       y 18.92056
+    #> 1  Petal.Width       y 31.28616
+    #> 2  Sepal.Width       y 23.46471
+    #> 3 Petal.Length       y 23.32995
+    #> 4 Sepal.Length       y 21.91917
     ```
 
 2.  Olden’s Algorithm
@@ -472,11 +472,11 @@ networks. Two primary algorithms are available:
     ``` r
 
     olden(model, bar_plot = FALSE)
-    #>        x_names y_names     rel_imp
-    #> 1 Petal.Length       y -0.11365748
-    #> 2  Petal.Width       y -0.05461216
-    #> 3 Sepal.Length       y  0.04247345
-    #> 4  Sepal.Width       y -0.02460878
+    #>        x_names y_names    rel_imp
+    #> 1  Petal.Width       y -2.3242792
+    #> 2 Petal.Length       y -1.6174078
+    #> 3  Sepal.Width       y  0.7674966
+    #> 4 Sepal.Length       y  0.5841868
     ```
 
 ### Integration with {vip}

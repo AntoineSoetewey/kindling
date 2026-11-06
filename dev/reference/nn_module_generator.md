@@ -384,6 +384,6 @@ if (torch::torch_is_installed()) {
 #>           x = x$mean(dim = 2)
 #>           x
 #>         }>)
-#> env:  0x5b5a212d6898
+#> env:  0x60688d506bc0
 # }
 ```

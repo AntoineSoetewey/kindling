@@ -276,7 +276,7 @@ to the training data.</p>
 <span><span class="co">#&gt; actual       setosa versicolor virginica</span></span>
 <span><span class="co">#&gt;   setosa         50          0         0</span></span>
 <span><span class="co">#&gt;   versicolor      0         48         2</span></span>
-<span><span class="co">#&gt;   virginica       0          0        50</span></span></code></pre></div>
+<span><span class="co">#&gt;   virginica       0          2        48</span></span></code></pre></div>
 </li>
 <li>
 <p><strong>With <code>newdata</code></strong> simply pass the new
@@ -490,20 +490,20 @@ algorithms are available:</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/NeuralNetTools/man/garson.html" class="external-link">garson</a></span><span class="op">(</span><span class="va">model</span>, bar_plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="co">#&gt;        x_names y_names  rel_imp</span></span>
-<span><span class="co">#&gt; 1 Petal.Length       y 35.38786</span></span>
-<span><span class="co">#&gt; 2  Petal.Width       y 25.74123</span></span>
-<span><span class="co">#&gt; 3 Sepal.Length       y 19.95034</span></span>
-<span><span class="co">#&gt; 4  Sepal.Width       y 18.92056</span></span></code></pre></div>
+<span><span class="co">#&gt; 1  Petal.Width       y 31.28616</span></span>
+<span><span class="co">#&gt; 2  Sepal.Width       y 23.46471</span></span>
+<span><span class="co">#&gt; 3 Petal.Length       y 23.32995</span></span>
+<span><span class="co">#&gt; 4 Sepal.Length       y 21.91917</span></span></code></pre></div>
 </li>
 <li>
 <p>Olden’s Algorithm</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/NeuralNetTools/man/olden.html" class="external-link">olden</a></span><span class="op">(</span><span class="va">model</span>, bar_plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt;        x_names y_names     rel_imp</span></span>
-<span><span class="co">#&gt; 1 Petal.Length       y -0.11365748</span></span>
-<span><span class="co">#&gt; 2  Petal.Width       y -0.05461216</span></span>
-<span><span class="co">#&gt; 3 Sepal.Length       y  0.04247345</span></span>
-<span><span class="co">#&gt; 4  Sepal.Width       y -0.02460878</span></span></code></pre></div>
+<span><span class="co">#&gt;        x_names y_names    rel_imp</span></span>
+<span><span class="co">#&gt; 1  Petal.Width       y -2.3242792</span></span>
+<span><span class="co">#&gt; 2 Petal.Length       y -1.6174078</span></span>
+<span><span class="co">#&gt; 3  Sepal.Width       y  0.7674966</span></span>
+<span><span class="co">#&gt; 4 Sepal.Length       y  0.5841868</span></span></code></pre></div>
 </li>
 </ol>
 <div class="section level3">
